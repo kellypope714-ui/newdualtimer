@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Responsive Dual Countdown Timers</title>
 
-  <!-- PWA manifest (make sure manifest.json is uploaded to the same repo root) -->
+ <!-- PWA manifest (make sure manifest.json is uploaded to the same repo root) -->
   <link rel="manifest" href="/manifest.json">
 
   <!-- Antic Didone (serif) with fallbacks -->
@@ -21,7 +21,7 @@
       --btn-bg:rgba(255,255,255,0.92);
       --accent:#5b9dff;
       --shadow:0 10px 30px rgba(0,0,0,0.16);
-      --radius:12px;
+-radius:12px;
 
       /* Defaults (tablet) */
       --max-w:360px;
@@ -32,11 +32,7 @@
       --value-size:28px;
     }
 
-    html,body{
-      height:100%; margin:0; background:transparent;
-      font-family:"Antic Didone", Georgia, "Times New Roman", serif;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    }
+    html,body{height:100%;margin:0;background:transparent;font-family:"Antic Didone", Georgia, "Times New Roman", serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 
     /* overlay top-right */
     .overlay{
@@ -58,8 +54,16 @@
       :root{ --max-w:280px; --unit-min-w:60px; --header-size:12px; --time-size:15px; --value-size:16px; }
       .overlay{ width:var(--max-w); transform:scale(0.94); transform-origin:top right; }
     }
+
+    /* Desktop wide */
     @media (min-width:1200px){
       :root{ --max-w:420px; --unit-min-w:110px; --gap:10px; --header-size:18px; --time-size:32px; --value-size:34px; }
+    }
+
+    /* Force stacked layout for landscape tablets and narrow heights to avoid clipping */
+    @media (orientation:landscape) and (min-width:800px) {
+      .body { grid-template-columns: 1fr !important; }
+      :root { --max-w: 420px; } /* allow slightly wider overlay in landscape */
     }
 
     /* Force stacked vertical layout for split-screen, narrow height, or narrow width */
@@ -75,7 +79,7 @@
       :root { --max-w: 420px; }
     }
 
-    .header{
+   .header{
       height:56px;
       background:var(--pink-top);
       color:white;
@@ -128,17 +132,6 @@
 
     @media (max-width:520px){ .body{ grid-template-columns:1fr; } }
   </style>
-
-  <script>
-    // Register service worker (sw.js) when available
-    if ('serviceWorker' in navigator) {
-      try {
-        navigator.serviceWorker.register('/sw.js');
-      } catch (e) {
-        // registration failure ignored intentionally
-      }
-    }
-  </script>
 </head>
 <body>
   <div class="overlay" id="overlay" role="application" aria-label="Dual countdown timers overlay">
