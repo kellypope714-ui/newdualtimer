@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Responsive Dual Countdown Timers</title>
+
+  <!-- PWA manifest (make sure manifest.json is uploaded to the same repo root) -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Antic Didone (serif) with fallbacks -->
+  <link href="https://fonts.googleapis.com/css2?family=Antic+Didone:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --pink-top:#ff4d94;
+      --control-gray:#2b2b2b;
+      --muted-gray:#e9e9eb;
+      --btn-bg:rgba(255,255,255,0.92);
+      --accent:#5b9dff;
+      --shadow:0 10px 30px rgba(0,0,0,0.16);
+      --radius:12px;
+
+      /* Defaults (tablet) */
+      --max-w:360px;
+      --unit-min-w:86px;
+      --gap:8px;
+      --header-size:16px;
+      --time-size:26px;
+      --value-size:28px;
+    }
+
+    html,body{
+      height:100%; margin:0; background:transparent;
+      font-family:"Antic Didone", Georgia, "Times New Roman", serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* overlay top-right */
+    .overlay{
+      position:fixed;
+      top:8px; right:8px;
+      width:var(--max-w); max-width:calc(100% - 16px);
+      border-radius:12px; overflow:hidden;
+      box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.06);
+      z-index:99999; background:linear-gradient(180deg,var(--pink-top) 0%, rgba(255,77,148,0.12) 18%, rgba(255,150,180,0.08) 100%);
+      display:flex; flex-direction:column; touch-action:none; user-select:none; left:auto; transform-origin:top right;
+    }
+
+    /* compact scaling for narrow viewports (phones) */
+    @media (max-width:420px), (max-height:620px){
+      :root{ --max-w:300px; --unit-min-w:68px; --gap:6px; --header-size:13px; --time-size:18px; --value-size:20px; }
+      .overlay{ width:var(--max-w); transform-origin:top right; }
+    }
+    @media (max-width:360px),(max-height:520px){
+      :root{ --max-w:280px; --unit-min-w:60px; --header-size:12px; --time-size:15px; --value-size:16px; }
+      .overlay{ width:var(--max-w); transform:scale(0.94); transform-origin:top right; }
+    }
+    @media (min-width:1200px){
+      :root{ --max-w:420px; --unit-min-w:110px; --gap:10px; --header-size:18px; --time-size:32px; --value-size:34px; }
+    }
+
+    /* Force stacked vertical layout for split-screen, narrow height, or narrow width */
+    @media (max-width:900px), (max-height:700px) {
+      .body { grid-template-columns: 1fr !important; }
+      :root { --max-w: calc(100% - 24px); }
+      .overlay { left: 8px !important; right: 8px !important; width: auto !important; max-width: calc(100% - 16px) !important; }
+    }
+
+    /* STACK when portrait OR narrow viewport to avoid clipping on phones and vertical screens */
+    @media (orientation:portrait), (max-width:520px){
+      .body { grid-template-columns: 1fr !important; }
+      :root { --max-w: 420px; }
+    }
+
+    .header{
+      height:56px;
+      background:var(--pink-top);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 10px;
+      font-weight:700;
+      font-size:var(--header-size);
+      gap:6px;
+      cursor:grab;
+    }
+
+    .body{
+      padding:10px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:var(--gap);
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+
+    .toggle-row{ grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; padding:0 2px; }
+    .toggle-label{ color:var(--control-gray); font-size:13px; font-weight:700; }
+    .switch{ width:46px; height:26px; background:#fff; border-radius:16px; padding:3px; display:flex; align-items:center; box-shadow:inset 0 1px 2px rgba(0,0,0,0.06); cursor:pointer; }
+    .switch .knob{ width:20px; height:20px; background:var(--pink-top); border-radius:50%; transition:transform .12s ease; transform:translateX(0); }
+    .switch.off .knob{ transform:translateX(20px); background:#bbb; }
+    .switch.off{ background:#fff; }
+
+    .timer-card{ border-radius:10px; padding:8px; background:rgba(255,255,255,0.03); display:flex; flex-direction:column; justify-content:space-between; border:1px solid rgba(255,255,255,0.03); min-height:160px; }
+    .label{ color:var(--control-gray); font-size:12px; letter-spacing:0.6px; font-weight:700; margin-bottom:6px; }
+
+    .setters{ display:flex; gap:8px; align-items:center; justify-content:center; margin:4px 0 8px; }
+    .unit{ min-width:var(--unit-min-w); background:rgba(255,255,255,0.02); border-radius:8px; padding:8px; text-align:center; display:flex; flex-direction:column; gap:8px; align-items:center; }
+    .label-small{ font-size:11px; color:rgba(0,0,0,0.45); letter-spacing:0.6px; }
+    .value{ font-size:var(--value-size); color:var(--control-gray); font-weight:700; }
+
+    .arrows{ display:flex; flex-direction:column; gap:6px; align-items:center; }
+    .arrow{ width:34px; height:28px; display:inline-grid; place-items:center; background:var(--btn-bg); border-radius:6px; border:1px solid rgba(0,0,0,0.06); color:var(--accent); cursor:pointer; font-weight:700; user-select:none; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+
+    .countdown{ text-align:center; margin-top:6px; padding:8px 6px; background:rgba(255,255,255,0.02); border-radius:8px; }
+    .time-display{ font-size:var(--time-size); color:var(--control-gray); font-weight:700; }
+
+    .controls{ display:flex; gap:8px; margin-top:12px; justify-content:center; align-items:center; }
+    .btn{ padding:8px 10px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; border:none; min-width:66px; }
+    .btn.pause{ background:var(--muted-gray); color:var(--control-gray); }
+    .btn.resume{ background:#fff; color:var(--control-gray); border:1px solid rgba(0,0,0,0.06); }
+    .btn.clear{ background:transparent; color:var(--control-gray); border:1px dashed rgba(0,0,0,0.06); }
+
+    .small-note{ font-size:11px; color:rgba(0,0,0,0.45); text-align:center; margin-top:6px; }
+
+    @media (max-width:520px){ .body{ grid-template-columns:1fr; } }
+  </style>
+
+  <script>
+    // Register service worker (sw.js) when available
+    if ('serviceWorker' in navigator) {
+      try {
+        navigator.serviceWorker.register('/sw.js');
+      } catch (e) {
+        // registration failure ignored intentionally
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="overlay" id="overlay" role="application" aria-label="Dual countdown timers overlay">
+    <div class="header" id="drag-handle" aria-grabbed="false">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">⏱</span><span style="font-size:15px;">Timer</span></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="pin-btn" title="Pin (lock position)" style="background:transparent;border:none;color:white;font-weight:700;cursor:pointer;">📌</button>
+        <button id="close-btn" title="Close overlay" style="background:transparent;border:none;color:white;font-weight:700;cursor:pointer;">✕</button>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="toggle-row">
+        <div class="toggle-label">Display Timer for Others</div>
+        <div id="share-toggle" class="switch off" role="switch" aria-checked="false" tabindex="0" title="Toggle display for others">
+          <div class="knob"></div>
+        </div>
+      </div>
+
+      <div class="timer-card" id="card-current" aria-live="polite">
+        <div>
+          <div class="label">CURRENT TASK</div>
+          <div class="setters" aria-hidden="false">
+            <div class="unit" aria-label="Hours setter current">
+              <div class="label-small">HOURS</div>
+              <div class="value" id="cur-hours">00</div>
+              <div class="arrows">
+                <div class="arrow" data-action="inc" data-target="cur-hours">▲</div>
+                <div class="arrow" data-action="dec" data-target="cur-hours">▼</div>
+              </div>
+            </div>
+
+            <div class="unit" aria-label="Minutes setter current">
+              <div class="label-small">MINUTES</div>
+              <div class="value" id="cur-mins">00</div>
+              <div class="arrows">
+                <div class="arrow" data-action="inc" data-target="cur-mins">▲</div>
+                <div class="arrow" data-action="dec" data-target="cur-mins">▼</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="countdown" id="cur-countdown">
+            <div class="time-display" id="cur-display">00:00:00</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="controls">
+            <button class="btn pause" data-timer="current" id="cur-pause">Pause</button>
+            <button class="btn resume" data-timer="current" id="cur-resume">Start</button>
+            <button class="btn clear" data-timer="current" id="cur-clear">Clear</button>
+          </div>
+          <div class="small-note">Set the time with arrows, then press Start</div>
+        </div>
+      </div>
+
+      <div class="timer-card" id="card-overall" aria-live="polite">
+        <div>
+          <div class="label">OVERALL SESSION</div>
+          <div class="setters" aria-hidden="false">
+            <div class="unit" aria-label="Hours setter overall">
+              <div class="label-small">HOURS</div>
+              <div class="value" id="ovr-hours">00</div>
+              <div class="arrows">
+                <div class="arrow" data-action="inc" data-target="ovr-hours">▲</div>
+                <div class="arrow" data-action="dec" data-target="ovr-hours">▼</div>
+              </div>
+            </div>
+
+            <div class="unit" aria-label="Minutes setter overall">
+              <div class="label-small">MINUTES</div>
+              <div class="value" id="ovr-mins">00</div>
+              <div class="arrows">
+                <div class="arrow" data-action="inc" data-target="ovr-mins">▲</div>
+                <div class="arrow" data-action="dec" data-target="ovr-mins">▼</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="countdown" id="ovr-countdown">
+            <div class="time-display" id="ovr-display">00:00:00</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="controls">
+            <button class="btn pause" data-timer="overall" id="ovr-pause">Pause</button>
+            <button class="btn resume" data-timer="overall" id="ovr-resume">Start</button>
+            <button class="btn clear" data-timer="overall" id="ovr-clear">Clear</button>
+          </div>
+          <div class="small-note">This is the total session for the project</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  const timers = {
+    current: {h:0,m:0,remaining:0,interval:null,running:false},
+    overall: {h:0,m:0,remaining:0,interval:null,running:false}
+  };
+
+  function setDisplay(id,v){ document.getElementById(id).textContent = pad2(v); }
+  setDisplay('cur-hours',0); setDisplay('cur-mins',0); setDisplay('ovr-hours',0); setDisplay('ovr-mins',0);
+
+  function updateCountdownDisplay(which){
+    const t = timers[which];
+    const el = document.getElementById(which==='current' ? 'cur-display' : 'ovr-display');
+    const sec = Math.max(0, t.remaining);
+    const hh = Math.floor(sec/3600), mm = Math.floor((sec%3600)/60), ss = sec%60;
+    el.textContent = pad2(hh)+':'+pad2(mm)+':'+pad2(ss);
+  }
+
+  function applySet(which){
+    const t = timers[which];
+    t.remaining = t.h*3600 + t.m*60;
+    updateCountdownDisplay(which);
+  }
+
+  document.querySelectorAll('.arrow').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const action = btn.dataset.action, target = btn.dataset.target;
+      const el = document.getElementById(target);
+      let val = parseInt(el.textContent,10);
+      val = action === 'inc' ? Math.min(val+1,99) : Math.max(val-1,0);
+      el.textContent = pad2(val);
+      if (target.startsWith('cur-')){
+        if (target.endsWith('hours')) timers.current.h = val;
+        if (target.endsWith('mins')) timers.current.m = val;
+        applySet('current');
+      } else {
+        if (target.endsWith('hours')) timers.overall.h = val;
+        if (target.endsWith('mins')) timers.overall.m = val;
+        applySet('overall');
+      }
+    });
+
+    let hold = null;
+    btn.addEventListener('touchstart', ()=>{ hold = setInterval(()=> btn.click(), 160); }, {passive:true});
+    btn.addEventListener('touchend', ()=>{ if (hold) clearInterval(hold); }, {passive:true});
+  });
+
+  function startCountdown(which){
+    const t = timers[which];
+    if (t.interval) clearInterval(t.interval);
+    if (t.remaining <= 0) return;
+    t.running = true;
+    t.interval = setInterval(()=>{
+      if (t.remaining > 0){ t.remaining--; updateCountdownDisplay(which); }
+      else { clearInterval(t.interval); t.interval = null; t.running = false; signalEnd(which); }
+    },1000);
+  }
+
+  function pause(which){
+    const t = timers[which];
+    if (t.interval){ clearInterval(t.interval); t.interval = null; }
+    t.running = false;
+  }
+
+  function resume(which){
+    const t = timers[which];
+    if (t.remaining <= 0) return;
+    if (!t.running) startCountdown(which);
+  }
+
+  function clearTimer(which){
+    const t = timers[which];
+    if (t.interval){ clearInterval(t.interval); t.interval = null; }
+    t.running = false;
+    t.h = 0; t.m = 0;
+    if (which === 'current'){ setDisplay('cur-hours',0); setDisplay('cur-mins',0); } else { setDisplay('ovr-hours',0); setDisplay('ovr-mins',0); }
+    t.remaining = 0;
+    updateCountdownDisplay(which);
+    const toggle = document.getElementById('share-toggle');
+    if (toggle && !toggle.classList.contains('off')) toggle.classList.add('off');
+    if (toggle) toggle.setAttribute('aria-checked','false');
+  }
+
+  function signalEnd(which){
+    const el = document.getElementById(which==='current' ? 'cur-display' : 'ovr-display');
+    el.style.transition = 'color 0.25s';
+    el.style.color = '#ff2d6f';
+    setTimeout(()=> el.style.color = '', 1100);
+    if (navigator.vibrate) navigator.vibrate([200,100,200]);
+  }
+
+  document.getElementById('cur-pause').addEventListener('click', ()=> pause('current'));
+  document.getElementById('cur-resume').addEventListener('click', ()=>{
+    if (timers.current.remaining <= 0) applySet('current');
+    resume('current');
+  });
+  document.getElementById('cur-clear').addEventListener('click', ()=> clearTimer('current'));
+
+  document.getElementById('ovr-pause').addEventListener('click', ()=> pause('overall'));
+  document.getElementById('ovr-resume').addEventListener('click', ()=>{
+    if (timers.overall.remaining <= 0) applySet('overall');
+    resume('overall');
+  });
+  document.getElementById('ovr-clear').addEventListener('click', ()=> clearTimer('overall'));
+
+  document.addEventListener('keydown',(e)=>{
+    const focused = document.activeElement;
+    if (focused && focused.classList.contains('arrow')){
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); focused.click(); }
+    }
+    if (document.activeElement === document.getElementById('share-toggle') && (e.key === 'Enter' || e.key === ' ')){
+      e.preventDefault(); toggleShare();
+    }
+  });
+
+  function toggleShare(){
+    const toggle = document.getElementById('share-toggle');
+    if (!toggle) return;
+    toggle.classList.toggle('off');
+    const off = toggle.classList.contains('off');
+    toggle.setAttribute('aria-checked', (!off).toString());
+  }
+  document.getElementById('share-toggle').addEventListener('click', toggleShare);
+
+  (function(){
+    const el = document.getElementById('overlay');
+    const handle = document.getElementById('drag-handle');
+    let dragging=false, startX=0, startY=0, origLeft=0, origTop=0;
+    function clampInitial(){
+      const r = el.getBoundingClientRect();
+      if (r.right > window.innerWidth - 6){ el.style.left = Math.max(6, window.innerWidth - r.width - 6) + 'px'; el.style.right = 'auto'; el.style.transform = 'none'; }
+      if (r.bottom > window.innerHeight - 6){ el.style.top = Math.max(6, window.innerHeight - r.height - 6) + 'px'; }
+    }
+    window.addEventListener('load', clampInitial);
+    window.addEventListener('resize', clampInitial);
+
+    handle.addEventListener('pointerdown',(ev)=>{
+      if (ev.button !== 0) return;
+      dragging=true; handle.setAttribute('aria-grabbed','true');
+      startX=ev.clientX; startY=ev.clientY;
+      const rect = el.getBoundingClientRect(); origLeft=rect.left; origTop=rect.top;
+      el.setPointerCapture(ev.pointerId);
+    });
+
+    window.addEventListener('pointermove',(ev)=>{
+      if (!dragging) return;
+      const dx = ev.clientX - startX, dy = ev.clientY - startY;
+      let nx = origLeft + dx, ny = origTop + dy;
+      nx = Math.min(Math.max(6, nx), window.innerWidth - el.offsetWidth - 6);
+      ny = Math.min(Math.max(6, ny), window.innerHeight - el.offsetHeight - 6);
+      el.style.left = nx + 'px'; el.style.top = ny + 'px'; el.style.right = 'auto'; el.style.transform = 'none';
+    });
+
+    window.addEventListener('pointerup',(ev)=>{
+      if (!dragging) return;
+      dragging=false; handle.setAttribute('aria-grabbed','false');
+      try{ el.releasePointerCapture(ev.pointerId); }catch(e){}
+      const rect = el.getBoundingClientRect(); let nx = rect.left, ny = rect.top;
+      nx = Math.min(Math.max(6, nx), window.innerWidth - el.offsetWidth - 6);
+      ny = Math.min(Math.max(6, ny), window.innerHeight - el.offsetHeight - 6);
+      el.style.left = nx + 'px'; el.style.top = ny + 'px';
+    });
+
+    const pinBtn = document.getElementById('pin-btn'); let pinned=false;
+    pinBtn.addEventListener('click', ()=>{ pinned = !pinned; pinBtn.textContent = pinned ? '🔒' : '📌'; handle.style.cursor = pinned ? 'default' : 'grab'; });
+    handle.addEventListener('pointerdown',(ev)=>{ if (pinned){ ev.preventDefault(); ev.stopPropagation(); return false; } });
+  })();
+
+  document.getElementById('close-btn').addEventListener('click', ()=> document.getElementById('overlay').style.display = 'none');
+
+  function applyInitial(){
+    timers.current.h = parseInt(document.getElementById('cur-hours').textContent,10);
+    timers.current.m = parseInt(document.getElementById('cur-mins').textContent,10);
+    timers.overall.h = parseInt(document.getElementById('ovr-hours').textContent,10);
+    timers.overall.m = parseInt(document.getElementById('ovr-mins').textContent,10);
+    applySet('current'); applySet('overall');
+  }
+  function applySet(which){ const t = timers[which]; t.remaining = t.h*3600 + t.m*60; updateCountdownDisplay(which); }
+  applyInitial();
+</script>
+</body>
+</html>
