@@ -7,100 +7,82 @@
   <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap" rel="stylesheet">
   <style>
     :root{
-      --pink1: #ffd7e6;
-      --pink2: #ff7fbf;
-      --accent:#ff4d9e;
-      --panel:#fff5f9;
-      --card:#fff;
-      --text:#2b052e;
-      --muted:#6b3b4f;
-      --danger:#ff5b6b;
-      --turquoise:#28e0c7;
-      --font: 'Antic Didone', serif;
+      --pink1:#ffd7e6; --pink2:#ff7fbf;
+      --accent:#ff4d9e; --panel:#fff5f9; --card:#fff; --text:#2b052e; --muted:#6b3b4f;
+      --turq:#28e0c7; --font:'Antic Didone', serif;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      font-family:var(--font);
-      color:var(--text);
-      background: linear-gradient(180deg,var(--pink1),var(--pink2));
-      padding:16px;
+      margin:0; font-family:var(--font); color:var(--text);
+      background: linear-gradient(180deg,var(--pink1),var(--pink2)); padding:16px;
+      -webkit-font-smoothing:antialiased;
     }
 
-    /* layout */
-    #rootWrap { max-width:1280px; margin:0 auto; }
-    .app-wrap{ display:flex; gap:18px; align-items:flex-start; }
-    .timers{ flex:1; min-width:320px; }
-    .timer-card{
-      background:var(--panel);
-      padding:14px;
-      border-radius:12px;
-      margin-bottom:12px;
-      box-shadow:0 6px 18px rgba(43,5,46,0.12);
-      border:1px solid rgba(43,5,46,0.06);
-      position:relative;
-    }
-    .timer-title{ display:flex; justify-content:space-between; align-items:center; gap:8px }
-    .timer-title h2{ margin:0; font-size:1.05rem; color:var(--accent) }
-    .timer-time{ font-size:2.4rem; text-align:center; margin:10px 0; letter-spacing:0.5px }
-    .controls{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px }
-    .btn{ background:var(--accent); color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700 }
-    .muted{ color:var(--muted); font-size:0.9rem }
+    /* Layout */
+    .wrap{max-width:1280px;margin:0 auto;}
+    .app{display:flex;gap:18px;align-items:flex-start;}
+    .timers{flex:1;min-width:320px;}
+    .timer-card{background:var(--panel);padding:14px;border-radius:12px;margin-bottom:12px;box-shadow:0 6px 18px rgba(43,5,46,0.12);border:1px solid rgba(43,5,46,0.06);position:relative}
+    .timer-title{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .timer-title h2{margin:0;font-size:1.05rem;color:var(--accent)}
+    .timer-time{text-align:center;margin:10px 0;font-size:2.4rem;letter-spacing:0.5px}
+    .controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+    .btn{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+    .muted{color:var(--muted);font-size:0.9rem}
 
-    /* time inputs and arrow buttons */
-    .time-inputs{ display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap }
-    .time-group{ display:flex; flex-direction:column; align-items:center; background:transparent; }
-    .time-row{ display:flex; align-items:center; gap:6px; }
-    .time-group input[type="number"]{
-      width:64px; padding:6px 8px; border-radius:8px; border:1px solid rgba(43,5,46,0.08); text-align:center; font-size:1rem;
-      appearance: textfield;
-    }
-    .arrow-btn{ width:28px; height:28px; border-radius:6px; border:1px solid rgba(43,5,46,0.06); background:#fff; cursor:pointer }
-    .time-label{ font-size:0.75rem; color:var(--muted); margin-top:6px }
+    /* Time inputs: stacked arrows */
+    .time-inputs{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+    .time-group{display:flex;flex-direction:column;align-items:center}
+    .time-stack{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .time-stack input[type="number"]{width:68px;padding:6px 8px;border-radius:8px;border:1px solid rgba(43,5,46,0.08);text-align:center;font-size:1rem}
+    .arrow-btn{width:34px;height:28px;border-radius:6px;border:0;background:linear-gradient(180deg,var(--turq),#b2fff0);color:#003b36;cursor:pointer;font-weight:700}
+    .arrow-btn:active{transform:translateY(1px)}
+    .time-label{font-size:0.75rem;color:var(--muted);margin-top:6px}
 
-    /* notes collapse */
-    .notes-toggle{ display:flex; justify-content:flex-end; margin-top:8px; gap:8px; align-items:center; }
-    .note-area{ width:100%; margin-top:8px; padding:10px; border-radius:8px; background:var(--card); border:1px solid rgba(43,5,46,0.06); color:var(--text); min-height:60px; resize:vertical }
-    .note-collapsed{ display:none; }
+    /* Notes */
+    .notes-toggle{display:flex;justify-content:flex-end;margin-top:8px;gap:8px;align-items:center}
+    .note-area{width:100%;margin-top:8px;padding:10px;border-radius:8px;background:var(--card);border:1px solid rgba(43,5,46,0.06);color:var(--text);min-height:60px;resize:vertical}
+    .note-collapsed{display:none}
 
-    /* attached tasks */
-    .attached-task{ display:flex; justify-content:space-between; gap:8px; padding:6px; border-radius:6px; margin-top:8px; background:rgba(43,5,46,0.03) }
+    /* Attached tasks */
+    .attached-task{display:flex;justify-content:space-between;gap:8px;padding:6px;border-radius:6px;margin-top:8px;background:rgba(43,5,46,0.03)}
 
-    /* sidebar */
-    .sidebar{ width:340px; background:var(--panel); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(43,5,46,0.08); border:1px solid rgba(43,5,46,0.04) }
-    .sidebar h3{ margin:0; color:var(--accent) }
-    .overall-add{ display:flex; gap:8px; margin-top:8px }
-    .task-input{ flex:1; padding:8px; border-radius:8px; border:1px solid rgba(43,5,46,0.06) }
-    .overall-list{ margin-top:10px; max-height:46vh; overflow:auto; padding-right:6px }
-    .task-row{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px; border-radius:8px; background:rgba(43,5,46,0.02); margin-bottom:8px }
-    .task-actions button{ background:transparent; color:var(--accent); border:0; font-size:1.05rem; cursor:pointer }
+    /* Sidebar */
+    .sidebar{width:340px;background:var(--panel);padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(43,5,46,0.08);border:1px solid rgba(43,5,46,0.04)}
+    .sidebar h3{margin:0;color:var(--accent)}
+    .overall-add{display:flex;gap:8px;margin-top:8px}
+    .task-input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(43,5,46,0.06)}
+    .overall-list{margin-top:10px;max-height:46vh;overflow:auto;padding-right:6px}
+    .task-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(43,5,46,0.02);margin-bottom:8px}
+    .task-actions button{background:transparent;color:var(--turq);border:0;font-size:0.95rem;cursor:pointer;padding:6px 8px;border-radius:6px}
 
-    /* pin and draggable */
-    .pin{ cursor:pointer; font-size:1.2rem; padding:6px; color:var(--muted) }
-    .pin.turq{ color:var(--turquoise); text-shadow:0 0 6px rgba(40,224,199,0.25) }
-    .draggable { cursor:grab; }
+    /* Pin + gradient */
+    .pin{cursor:pointer;font-size:1.2rem;padding:6px;color:var(--muted);border-radius:8px;background:linear-gradient(180deg,#fff,#fff0);border:1px solid rgba(43,5,46,0.02)}
+    .pin.active{ background: linear-gradient(90deg, var(--turq), #ffffff); color:#004b43; box-shadow:0 6px 18px rgba(40,224,199,0.12); }
 
-    /* mini overlay */
-    .floating-popup{ position:fixed; right:18px; bottom:18px; width:320px; max-width:90vw; z-index:9999; background:var(--panel); border-radius:10px; padding:10px; box-shadow:0 10px 30px rgba(43,5,46,0.12); border:1px solid rgba(43,5,46,0.06); display:none; }
-    .mini-close{ background:var(--turquoise); color:#fff; border:0; padding:6px 8px; border-radius:8px; cursor:pointer }
+    /* Draggable hint */
+    .draggable{cursor:grab}
 
-    @media(max-width:900px){
-      .app-wrap{flex-direction:column}
-      .sidebar{width:100%}
-    }
+    /* Mini overlay */
+    .floating-popup{position:fixed;right:18px;bottom:18px;width:320px;max-width:90vw;z-index:9999;background:var(--panel);border-radius:10px;padding:10px;box-shadow:0 10px 30px rgba(43,5,46,0.12);border:1px solid rgba(43,5,46,0.06);display:none}
+    .mini-close{background:var(--turq);color:#fff;border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
+
+    /* pointer fixes */
+    html,body,.app,.floating-popup{pointer-events:auto}
+    @media(max-width:900px){.app{flex-direction:column}.sidebar{width:100%}}
   </style>
 </head>
 <body>
-  <div id="rootWrap">
-    <div class="app-wrap" id="appWrap">
-      <div class="timers" id="timersRoot">
+  <div class="wrap">
+    <div class="app" id="appRoot">
+      <div class="timers">
         <!-- Timer A -->
         <div class="timer-card" id="timer1">
           <div class="timer-title">
             <h2 id="titleA">Current Task</h2>
             <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinA" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
+              <span id="pinA" class="pin" title="Pin to drag">📌</span>
               <span class="muted" id="statusA">stopped</span>
             </div>
           </div>
@@ -108,7 +90,7 @@
 
           <div class="time-inputs">
             <div class="time-group">
-              <div class="time-row">
+              <div class="time-stack">
                 <button class="arrow-btn" data-target="hoursA" data-dir="up">▲</button>
                 <input id="hoursA" type="number" min="0" max="999" value="0" />
                 <button class="arrow-btn" data-target="hoursA" data-dir="down">▼</button>
@@ -117,7 +99,7 @@
             </div>
 
             <div class="time-group">
-              <div class="time-row">
+              <div class="time-stack">
                 <button class="arrow-btn" data-target="minsA" data-dir="up">▲</button>
                 <input id="minsA" type="number" min="0" max="59" value="0" />
                 <button class="arrow-btn" data-target="minsA" data-dir="down">▼</button>
@@ -126,7 +108,7 @@
             </div>
 
             <div class="time-group">
-              <div class="time-row">
+              <div class="time-stack">
                 <button class="arrow-btn" data-target="secsA" data-dir="up">▲</button>
                 <input id="secsA" type="number" min="0" max="59" value="0" />
                 <button class="arrow-btn" data-target="secsA" data-dir="down">▼</button>
@@ -154,7 +136,7 @@
           <div class="timer-title">
             <h2 id="titleB">Overall Session</h2>
             <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinB" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
+              <span id="pinB" class="pin" title="Pin to drag">📌</span>
               <span class="muted" id="statusB">stopped</span>
             </div>
           </div>
@@ -162,7 +144,7 @@
 
           <div class="time-inputs">
             <div class="time-group">
-              <div class="time-row">
+              <div class="time-stack">
                 <button class="arrow-btn" data-target="hoursB" data-dir="up">▲</button>
                 <input id="hoursB" type="number" min="0" max="999" value="0" />
                 <button class="arrow-btn" data-target="hoursB" data-dir="down">▼</button>
@@ -171,7 +153,7 @@
             </div>
 
             <div class="time-group">
-              <div class="time-row">
+              <div class="time-stack">
                 <button class="arrow-btn" data-target="minsB" data-dir="up">▲</button>
                 <input id="minsB" type="number" min="0" max="59" value="0" />
                 <button class="arrow-btn" data-target="minsB" data-dir="down">▼</button>
@@ -180,7 +162,7 @@
             </div>
 
             <div class="time-group">
-              <div class="time-row">
+              <div class="time-stack">
                 <button class="arrow-btn" data-target="secsB" data-dir="up">▲</button>
                 <input id="secsB" type="number" min="0" max="59" value="0" />
                 <button class="arrow-btn" data-target="secsB" data-dir="down">▼</button>
@@ -205,13 +187,13 @@
       </div>
 
       <!-- Sidebar -->
-      <aside class="sidebar" id="taskSidebar">
+      <aside class="sidebar">
         <h3>Overall Session</h3>
         <div class="overall-add">
           <input id="newTaskName" class="task-input" placeholder="New task name">
           <button class="btn" id="addTaskBtn">Add</button>
         </div>
-        <div class="muted" style="margin-top:6px">Click +A or +B to attach to a timer. Hover attached tasks to remove.</div>
+        <div class="muted" style="margin-top:6px">Click CT or OS to attach to timers. Hover attached tasks to remove.</div>
         <div class="overall-list" id="overallList"></div>
         <div style="margin-top:12px; display:flex; gap:8px;">
           <button class="btn" id="clearAll">Clear All</button>
@@ -221,7 +203,7 @@
     </div>
   </div>
 
-  <!-- Mini overlay (draggable in-page only) -->
+  <!-- In-page mini (fallback) -->
   <div id="miniPopup" class="floating-popup" role="dialog" aria-label="Mini timer overlay">
     <div id="miniHeader" style="display:flex;justify-content:space-between;align-items:center;cursor:move;">
       <strong>Timer Overlay</strong>
@@ -229,82 +211,85 @@
     </div>
     <div style="margin-top:8px;">
       <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;margin-bottom:8px;">
-        <div style="font-weight:700">A</div>
+        <div style="font-weight:700">Current Task</div>
         <div id="miniTimeA" style="font-size:1.2rem">00:00:00</div>
       </div>
       <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;">
-        <div style="font-weight:700">B</div>
+        <div style="font-weight:700">Overall Session</div>
         <div id="miniTimeB" style="font-size:1.2rem">00:00:00</div>
       </div>
     </div>
   </div>
 
 <script>
-  // persistence keys
-  const STORE_KEY = 'kp_tasks_v1';
-  const ATT_A = 'kp_attachedA';
-  const ATT_B = 'kp_attachedB';
-  const NOTES = 'kp_notes_v2';
-  const POS = 'kp_main_pos';
+  // localStorage keys and state
+  const TASK_KEY = 'kp_tasks_v1';
+  const ATT_A = 'kp_attachedA_v1';
+  const ATT_B = 'kp_attachedB_v1';
+  const NOTES = 'kp_notes_v1';
+  const POS_A = 'kp_pos_A_v1';
+  const POS_B = 'kp_pos_B_v1';
+  const MINI_POS = 'kp_mini_pos_v1';
 
   const state = {
-    tasks: JSON.parse(localStorage.getItem(STORE_KEY) || '[]'),
+    tasks: JSON.parse(localStorage.getItem(TASK_KEY) || '[]'),
     attachedA: JSON.parse(localStorage.getItem(ATT_A) || '[]'),
     attachedB: JSON.parse(localStorage.getItem(ATT_B) || '[]'),
     notes: JSON.parse(localStorage.getItem(NOTES) || '{}')
   };
+
   function saveAll(){
-    localStorage.setItem(STORE_KEY, JSON.stringify(state.tasks));
+    localStorage.setItem(TASK_KEY, JSON.stringify(state.tasks));
     localStorage.setItem(ATT_A, JSON.stringify(state.attachedA));
     localStorage.setItem(ATT_B, JSON.stringify(state.attachedB));
     localStorage.setItem(NOTES, JSON.stringify(state.notes));
   }
 
-  // utils
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  // render overall list
+  // Render overall list with short attach labels CT / OS
   function renderOverall(){
     const root = document.getElementById('overallList');
     root.innerHTML = '';
     state.tasks.forEach((t,i)=>{
-      const div = document.createElement('div');
-      div.className = 'task-row';
-      div.innerHTML = `<div class="task-name">${escapeHtml(t)}</div>
+      const row = document.createElement('div');
+      row.className = 'task-row';
+      row.innerHTML = `<div class="task-name">${escapeHtml(t)}</div>
         <div class="task-actions">
-          <button data-idx="${i}" data-target="A">＋A</button>
-          <button data-idx="${i}" data-target="B">＋B</button>
+          <button data-idx="${i}" data-target="A">CT</button>
+          <button data-idx="${i}" data-target="B">OS</button>
         </div>`;
-      root.appendChild(div);
+      root.appendChild(row);
     });
-    root.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = ()=> {
+    root.querySelectorAll('.task-actions button').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
         const idx = Number(btn.dataset.idx);
-        attachToTimer(state.tasks[idx], btn.dataset.target);
-      };
+        const target = btn.dataset.target;
+        attachToTimer(state.tasks[idx], target);
+      });
     });
   }
 
   function renderAttached(which){
-    const container = document.getElementById(which==='A' ? 'attachedA' : 'attachedB');
-    const list = which==='A' ? state.attachedA : state.attachedB;
+    const container = document.getElementById(which === 'A' ? 'attachedA' : 'attachedB');
+    const list = which === 'A' ? state.attachedA : state.attachedB;
     container.innerHTML = '';
-    list.forEach((t,i)=>{
-      const row = document.createElement('div');
-      row.className = 'attached-task';
-      row.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`;
-      container.appendChild(row);
+    list.forEach((t, i)=>{
+      const item = document.createElement('div');
+      item.className = 'attached-task';
+      item.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`;
+      container.appendChild(item);
     });
-    container.querySelectorAll('.del').forEach(b=>{
-      b.onclick = ()=> {
-        const w = b.dataset.which, i = Number(b.dataset.idx);
-        if(w==='A') state.attachedA.splice(i,1); else state.attachedB.splice(i,1);
+    container.querySelectorAll('.del').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const which = btn.dataset.which, idx = Number(btn.dataset.idx);
+        if(which === 'A') state.attachedA.splice(idx,1); else state.attachedB.splice(idx,1);
         saveAll(); renderAttached('A'); renderAttached('B');
-      };
+      });
     });
   }
 
-  // ADD / CLEAR tasks
+  // Add/Clear tasks
   document.getElementById('addTaskBtn').addEventListener('click', ()=>{
     const v = document.getElementById('newTaskName').value.trim();
     if(!v) return;
@@ -318,2121 +303,200 @@
   });
 
   function attachToTimer(name, which){
-    if(which==='A'){ state.attachedA.push(name); document.getElementById('noteA').value = name; }
+    if(which === 'A'){ state.attachedA.push(name); document.getElementById('noteA').value = name; }
     else { state.attachedB.push(name); document.getElementById('noteB').value = name; }
     saveAll(); renderAttached('A'); renderAttached('B');
   }
 
-  // show/hide notes toggle
-  function setupNoteToggle(btnId, noteId){
+  // Notes toggle + persistence
+  function setupNote(btnId, noteId){
     const btn = document.getElementById(btnId), note = document.getElementById(noteId);
-    // restore note
     note.value = state.notes[noteId] || '';
-    btn.addEventListener('click', ()=> {
-      const isHidden = note.classList.contains('note-collapsed');
-      if(isHidden){ note.classList.remove('note-collapsed'); btn.textContent = 'Hide Notes'; }
+    btn.addEventListener('click', ()=>{
+      const hidden = note.classList.contains('note-collapsed');
+      if(hidden){ note.classList.remove('note-collapsed'); btn.textContent = 'Hide Notes'; }
       else { note.classList.add('note-collapsed'); btn.textContent = 'Show Notes'; }
     });
     note.addEventListener('input', ()=> { state.notes[noteId] = note.value; saveAll(); });
   }
-  setupNoteToggle('toggleNoteA','noteA');
-  setupNoteToggle('toggleNoteB','noteB');
+  setupNote('toggleNoteA','noteA');
+  setupNote('toggleNoteB','noteB');
 
-  // timer logic (countdown by duration from inputs)
-  function TimerInstance(prefix){
+  // Timer constructor (countdown by duration entered)
+  function Timer(prefix){
     this.prefix = prefix;
     this.display = document.getElementById('time' + prefix);
     this.status = document.getElementById('status' + prefix);
-    this.hIn = document.getElementById('hours' + prefix);
-    this.mIn = document.getElementById('mins' + prefix);
-    this.sIn = document.getElementById('secs' + prefix);
-    this.running = false;
-    this.startAt = 0;
-    this.acc = 0;
-    this.target = 0;
-    this.raf = null;
+    this.h = document.getElementById('hours' + prefix);
+    this.m = document.getElementById('mins' + prefix);
+    this.s = document.getElementById('secs' + prefix);
+    this.running = false; this.startAt = 0; this.acc = 0; this.target = 0; this.raf = null;
   }
-  TimerInstance.prototype.durationFromInputs = function(){
-    const h = Math.max(0, Number(this.hIn.value) || 0);
-    let m = Math.max(0, Number(this.mIn.value) || 0);
-    let s = Math.max(0, Number(this.sIn.value) || 0);
-    if(m>59) m = 59; if(s>59) s = 59;
-    return ((h*3600)+(m*60)+s)*1000;
+  Timer.prototype.inputsToMs = function(){
+    const hh = Math.max(0, Number(this.h.value)||0);
+    const mm = Math.max(0, Math.min(59, Number(this.m.value)||0));
+    const ss = Math.max(0, Math.min(59, Number(this.s.value)||0));
+    return ((hh*3600)+(mm*60)+ss)*1000;
   };
-  TimerInstance.prototype.format = function(ms){
-    const s = Math.floor(ms/1000)%60;
-    const m = Math.floor(ms/60000)%60;
-    const h = Math.floor(ms/3600000);
-    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
-  };
-  TimerInstance.prototype.updateDisplay = function(){
+  Timer.prototype.format = function(ms){ const s = Math.floor(ms/1000)%60; const m = Math.floor(ms/60000)%60; const h = Math.floor(ms/3600000); return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':'); };
+  Timer.prototype.update = function(){
     const now = Date.now();
     const elapsed = this.acc + (this.running ? (now - this.startAt) : 0);
     if(this.target > 0){
-      const remain = Math.max(0, this.target - elapsed);
-      this.display.textContent = this.format(remain);
-      if(remain === 0 && this.running) { this.stop(true); }
+      const rem = Math.max(0, this.target - elapsed);
+      this.display.textContent = this.format(rem);
+      if(rem === 0 && this.running) this.stop(true);
     } else {
       this.display.textContent = this.format(elapsed);
     }
   };
-  TimerInstance.prototype.tick = function(){
-    this.updateDisplay();
-    if(this.running) this.raf = requestAnimationFrame(()=>this.tick());
-  };
-  TimerInstance.prototype.start = function(){
-    const dur = this.durationFromInputs();
-    if(dur === 0 && this.acc === 0){ alert('Set a duration before starting. Use the ▲ ▼ controls to change time.'); return; }
+  Timer.prototype.tick = function(){ this.update(); if(this.running) this.raf = requestAnimationFrame(()=>this.tick()); };
+  Timer.prototype.start = function(){
+    const dur = this.inputsToMs();
+    if(dur === 0 && this.acc === 0){ alert('Set a duration before starting. Use the ▲/▼ controls.'); return; }
     this.target = dur;
     if(this.running) return;
-    this.running = true;
-    this.startAt = Date.now();
-    this.status.textContent = 'running';
-    this.tick();
+    this.running = true; this.startAt = Date.now(); this.status && (this.status.textContent = 'running'); this.tick();
   };
-  TimerInstance.prototype.stop = function(finished=false){
+  Timer.prototype.stop = function(finished = false){
     if(!this.running) return;
-    this.running = false;
-    const now = Date.now();
-    this.acc += (now - this.startAt);
-    this.startAt = 0;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.status.textContent = finished ? 'finished' : 'stopped';
-    this.updateDisplay();
+    this.running = false; this.acc += Date.now() - this.startAt; this.startAt = 0; if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; } this.status && (this.status.textContent = finished ? 'finished' : 'stopped'); this.update();
   };
-  TimerInstance.prototype.clear = function(){
-    if(this.running){ if(!confirm('Timer is running. Clear anyway?')) return; }
-    this.running = false;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.startAt = 0; this.acc = 0; this.target = 0;
-    this.status.textContent = 'stopped';
-    this.display.textContent = '00:00:00';
-    this.hIn.value = 0; this.mIn.value = 0; this.sIn.value = 0;
+  Timer.prototype.clear = function(){
+    if(this.running && !confirm('Timer is running. Clear anyway?')) return;
+    this.running = false; if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; } this.startAt = 0; this.acc = 0; this.target = 0; this.status && (this.status.textContent = 'stopped'); this.display.textContent = '00:00:00'; this.h.value = 0; this.m.value = 0; this.s.value = 0;
   };
 
-  const A = new TimerInstance('A');
-  const B = new TimerInstance('B');
-
-  // wire basic controls
+  // Create timers and wire controls
+  const A = new Timer('A'), B = new Timer('B');
   document.getElementById('startA').addEventListener('click', ()=> A.start());
   document.getElementById('stopA').addEventListener('click', ()=> A.stop());
   document.getElementById('clearA').addEventListener('click', ()=> A.clear());
-
   document.getElementById('startB').addEventListener('click', ()=> B.start());
   document.getElementById('stopB').addEventListener('click', ()=> B.stop());
   document.getElementById('clearB').addEventListener('click', ()=> B.clear());
 
-  // arrow buttons behavior: increment/decrement target inputs
+  // Arrow buttons: pointer-safe handlers for mouse + touch
   document.querySelectorAll('.arrow-btn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
+    const handler = (ev)=>{
+      ev.preventDefault();
       const tgt = btn.dataset.target;
       const dir = btn.dataset.dir;
       const el = document.getElementById(tgt);
       if(!el) return;
-      const step = 1;
       let val = Number(el.value) || 0;
-      if(dir === 'up') val += step;
-      else val = Math.max(0, val - step);
-      // clamp mins and secs
-      if(tgt.includes('mins') || tgt.includes('secs')){
-        if(val > 59) val = 59;
-      } else {
-        if(val > 999) val = 999;
-      }
+      val = dir === 'up' ? val + 1 : Math.max(0, val - 1);
+      if(tgt.includes('mins') || tgt.includes('secs')) val = Math.min(59, val);
+      else val = Math.min(999, val);
       el.value = val;
-    });
+      // update timers' displays so user sees immediate change
+      A.update(); B.update();
+    };
+    btn.addEventListener('click', handler);
+    btn.addEventListener('touchend', handler, {passive:false});
   });
 
-  // render UI initially
-  function renderInitial(){
-    renderOverall();
-    renderAttached('A'); renderAttached('B');
-    // restore notes
-    document.getElementById('noteA').value = state.notes['noteA'] || '';
-    document.getElementById('noteB').value = state.notes['noteB'] || '';
-  }
-  renderInitial();
-
-  // save notes on input
-  document.getElementById('noteA').addEventListener('input', ()=> { state.notes['noteA'] = document.getElementById('noteA').value; saveAll(); });
-  document.getElementById('noteB').addEventListener('input', ()=> { state.notes['noteB'] = document.getElementById('noteB').value; saveAll(); });
-
-  // mini overlay open/close and drag
-  const mini = document.getElementById('miniPopup');
-  const miniHeader = document.getElementById('miniHeader');
-  document.getElementById('openMini').addEventListener('click', ()=>{
-    // show mini and position using saved pos if exists
-    mini.style.display = 'block';
-    const pos = JSON.parse(local<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Dual Timer with Tasks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --pink1: #ffd7e6;
-      --pink2: #ff7fbf;
-      --accent:#ff4d9e;
-      --panel:#fff5f9;
-      --card:#fff;
-      --text:#2b052e;
-      --muted:#6b3b4f;
-      --danger:#ff5b6b;
-      --turquoise:#28e0c7;
-      --font: 'Antic Didone', serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--font);
-      color:var(--text);
-      background: linear-gradient(180deg,var(--pink1),var(--pink2));
-      padding:16px;
-    }
-
-    /* layout */
-    #rootWrap { max-width:1280px; margin:0 auto; }
-    .app-wrap{ display:flex; gap:18px; align-items:flex-start; }
-    .timers{ flex:1; min-width:320px; }
-    .timer-card{
-      background:var(--panel);
-      padding:14px;
-      border-radius:12px;
-      margin-bottom:12px;
-      box-shadow:0 6px 18px rgba(43,5,46,0.12);
-      border:1px solid rgba(43,5,46,0.06);
-      position:relative;
-    }
-    .timer-title{ display:flex; justify-content:space-between; align-items:center; gap:8px }
-    .timer-title h2{ margin:0; font-size:1.05rem; color:var(--accent) }
-    .timer-time{ font-size:2.4rem; text-align:center; margin:10px 0; letter-spacing:0.5px }
-    .controls{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px }
-    .btn{ background:var(--accent); color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700 }
-    .muted{ color:var(--muted); font-size:0.9rem }
-
-    /* time inputs and arrow buttons */
-    .time-inputs{ display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap }
-    .time-group{ display:flex; flex-direction:column; align-items:center; background:transparent; }
-    .time-row{ display:flex; align-items:center; gap:6px; }
-    .time-group input[type="number"]{
-      width:64px; padding:6px 8px; border-radius:8px; border:1px solid rgba(43,5,46,0.08); text-align:center; font-size:1rem;
-      appearance: textfield;
-    }
-    .arrow-btn{ width:28px; height:28px; border-radius:6px; border:1px solid rgba(43,5,46,0.06); background:#fff; cursor:pointer }
-    .time-label{ font-size:0.75rem; color:var(--muted); margin-top:6px }
-
-    /* notes collapse */
-    .notes-toggle{ display:flex; justify-content:flex-end; margin-top:8px; gap:8px; align-items:center; }
-    .note-area{ width:100%; margin-top:8px; padding:10px; border-radius:8px; background:var(--card); border:1px solid rgba(43,5,46,0.06); color:var(--text); min-height:60px; resize:vertical }
-    .note-collapsed{ display:none; }
-
-    /* attached tasks */
-    .attached-task{ display:flex; justify-content:space-between; gap:8px; padding:6px; border-radius:6px; margin-top:8px; background:rgba(43,5,46,0.03) }
-
-    /* sidebar */
-    .sidebar{ width:340px; background:var(--panel); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(43,5,46,0.08); border:1px solid rgba(43,5,46,0.04) }
-    .sidebar h3{ margin:0; color:var(--accent) }
-    .overall-add{ display:flex; gap:8px; margin-top:8px }
-    .task-input{ flex:1; padding:8px; border-radius:8px; border:1px solid rgba(43,5,46,0.06) }
-    .overall-list{ margin-top:10px; max-height:46vh; overflow:auto; padding-right:6px }
-    .task-row{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px; border-radius:8px; background:rgba(43,5,46,0.02); margin-bottom:8px }
-    .task-actions button{ background:transparent; color:var(--accent); border:0; font-size:1.05rem; cursor:pointer }
-
-    /* pin and draggable */
-    .pin{ cursor:pointer; font-size:1.2rem; padding:6px; color:var(--muted) }
-    .pin.turq{ color:var(--turquoise); text-shadow:0 0 6px rgba(40,224,199,0.25) }
-    .draggable { cursor:grab; }
-
-    /* mini overlay */
-    .floating-popup{ position:fixed; right:18px; bottom:18px; width:320px; max-width:90vw; z-index:9999; background:var(--panel); border-radius:10px; padding:10px; box-shadow:0 10px 30px rgba(43,5,46,0.12); border:1px solid rgba(43,5,46,0.06); display:none; }
-    .mini-close{ background:var(--turquoise); color:#fff; border:0; padding:6px 8px; border-radius:8px; cursor:pointer }
-
-    @media(max-width:900px){
-      .app-wrap{flex-direction:column}
-      .sidebar{width:100%}
-    }
-  </style>
-</head>
-<body>
-  <div id="rootWrap">
-    <div class="app-wrap" id="appWrap">
-      <div class="timers" id="timersRoot">
-        <!-- Timer A -->
-        <div class="timer-card" id="timer1">
-          <div class="timer-title">
-            <h2 id="titleA">Current Task</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinA" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusA">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeA">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursA" data-dir="up">▲</button>
-                <input id="hoursA" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsA" data-dir="up">▲</button>
-                <input id="minsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsA" data-dir="up">▲</button>
-                <input id="secsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedA"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteA" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteA" class="note-area note-collapsed" placeholder="Notes for Timer A (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startA">Start</button>
-            <button class="btn" id="stopA">Stop</button>
-            <button class="btn" id="clearA">Clear</button>
-          </div>
-        </div>
-
-        <!-- Timer B -->
-        <div class="timer-card" id="timer2">
-          <div class="timer-title">
-            <h2 id="titleB">Overall Session</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinB" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusB">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeB">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursB" data-dir="up">▲</button>
-                <input id="hoursB" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsB" data-dir="up">▲</button>
-                <input id="minsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsB" data-dir="up">▲</button>
-                <input id="secsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedB"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteB" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteB" class="note-area note-collapsed" placeholder="Notes for Timer B (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startB">Start</button>
-            <button class="btn" id="stopB">Stop</button>
-            <button class="btn" id="clearB">Clear</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <aside class="sidebar" id="taskSidebar">
-        <h3>Overall Session</h3>
-        <div class="overall-add">
-          <input id="newTaskName" class="task-input" placeholder="New task name">
-          <button class="btn" id="addTaskBtn">Add</button>
-        </div>
-        <div class="muted" style="margin-top:6px">Click +A or +B to attach to a timer. Hover attached tasks to remove.</div>
-        <div class="overall-list" id="overallList"></div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="btn" id="clearAll">Clear All</button>
-          <button class="btn" id="openMini">Open Mini</button>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Mini overlay (draggable in-page only) -->
-  <div id="miniPopup" class="floating-popup" role="dialog" aria-label="Mini timer overlay">
-    <div id="miniHeader" style="display:flex;justify-content:space-between;align-items:center;cursor:move;">
-      <strong>Timer Overlay</strong>
-      <button id="miniClose" class="mini-close" aria-label="Close mini">X</button>
-    </div>
-    <div style="margin-top:8px;">
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;margin-bottom:8px;">
-        <div style="font-weight:700">A</div>
-        <div id="miniTimeA" style="font-size:1.2rem">00:00:00</div>
-      </div>
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;">
-        <div style="font-weight:700">B</div>
-        <div id="miniTimeB" style="font-size:1.2rem">00:00:00</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  // persistence keys
-  const STORE_KEY = 'kp_tasks_v1';
-  const ATT_A = 'kp_attachedA';
-  const ATT_B = 'kp_attachedB';
-  const NOTES = 'kp_notes_v2';
-  const POS = 'kp_main_pos';
-
-  const state = {
-    tasks: JSON.parse(localStorage.getItem(STORE_KEY) || '[]'),
-    attachedA: JSON.parse(localStorage.getItem(ATT_A) || '[]'),
-    attachedB: JSON.parse(localStorage.getItem(ATT_B) || '[]'),
-    notes: JSON.parse(localStorage.getItem(NOTES) || '{}')
-  };
-  function saveAll(){
-    localStorage.setItem(STORE_KEY, JSON.stringify(state.tasks));
-    localStorage.setItem(ATT_A, JSON.stringify(state.attachedA));
-    localStorage.setItem(ATT_B, JSON.stringify(state.attachedB));
-    localStorage.setItem(NOTES, JSON.stringify(state.notes));
-  }
-
-  // utils
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  // render overall list
-  function renderOverall(){
-    const root = document.getElementById('overallList');
-    root.innerHTML = '';
-    state.tasks.forEach((t,i)=>{
-      const div = document.createElement('div');
-      div.className = 'task-row';
-      div.innerHTML = `<div class="task-name">${escapeHtml(t)}</div>
-        <div class="task-actions">
-          <button data-idx="${i}" data-target="A">＋A</button>
-          <button data-idx="${i}" data-target="B">＋B</button>
-        </div>`;
-      root.appendChild(div);
-    });
-    root.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = ()=> {
-        const idx = Number(btn.dataset.idx);
-        attachToTimer(state.tasks[idx], btn.dataset.target);
-      };
-    });
-  }
-
-  function renderAttached(which){
-    const container = document.getElementById(which==='A' ? 'attachedA' : 'attachedB');
-    const list = which==='A' ? state.attachedA : state.attachedB;
-    container.innerHTML = '';
-    list.forEach((t,i)=>{
-      const row = document.createElement('div');
-      row.className = 'attached-task';
-      row.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`;
-      container.appendChild(row);
-    });
-    container.querySelectorAll('.del').forEach(b=>{
-      b.onclick = ()=> {
-        const w = b.dataset.which, i = Number(b.dataset.idx);
-        if(w==='A') state.attachedA.splice(i,1); else state.attachedB.splice(i,1);
-        saveAll(); renderAttached('A'); renderAttached('B');
-      };
-    });
-  }
-
-  // ADD / CLEAR tasks
-  document.getElementById('addTaskBtn').addEventListener('click', ()=>{
-    const v = document.getElementById('newTaskName').value.trim();
-    if(!v) return;
-    state.tasks.push(v);
-    document.getElementById('newTaskName').value = '';
-    saveAll(); renderOverall();
-  });
-  document.getElementById('clearAll').addEventListener('click', ()=>{
-    if(!confirm('Clear all saved tasks?')) return;
-    state.tasks = []; saveAll(); renderOverall(); renderAttached('A'); renderAttached('B');
-  });
-
-  function attachToTimer(name, which){
-    if(which==='A'){ state.attachedA.push(name); document.getElementById('noteA').value = name; }
-    else { state.attachedB.push(name); document.getElementById('noteB').value = name; }
-    saveAll(); renderAttached('A'); renderAttached('B');
-  }
-
-  // show/hide notes toggle
-  function setupNoteToggle(btnId, noteId){
-    const btn = document.getElementById(btnId), note = document.getElementById(noteId);
-    // restore note
-    note.value = state.notes[noteId] || '';
-    btn.addEventListener('click', ()=> {
-      const isHidden = note.classList.contains('note-collapsed');
-      if(isHidden){ note.classList.remove('note-collapsed'); btn.textContent = 'Hide Notes'; }
-      else { note.classList.add('note-collapsed'); btn.textContent = 'Show Notes'; }
-    });
-    note.addEventListener('input', ()=> { state.notes[noteId] = note.value; saveAll(); });
-  }
-  setupNoteToggle('toggleNoteA','noteA');
-  setupNoteToggle('toggleNoteB','noteB');
-
-  // timer logic (countdown by duration from inputs)
-  function TimerInstance(prefix){
-    this.prefix = prefix;
-    this.display = document.getElementById('time' + prefix);
-    this.status = document.getElementById('status' + prefix);
-    this.hIn = document.getElementById('hours' + prefix);
-    this.mIn = document.getElementById('mins' + prefix);
-    this.sIn = document.getElementById('secs' + prefix);
-    this.running = false;
-    this.startAt = 0;
-    this.acc = 0;
-    this.target = 0;
-    this.raf = null;
-  }
-  TimerInstance.prototype.durationFromInputs = function(){
-    const h = Math.max(0, Number(this.hIn.value) || 0);
-    let m = Math.max(0, Number(this.mIn.value) || 0);
-    let s = Math.max(0, Number(this.sIn.value) || 0);
-    if(m>59) m = 59; if(s>59) s = 59;
-    return ((h*3600)+(m*60)+s)*1000;
-  };
-  TimerInstance.prototype.format = function(ms){
-    const s = Math.floor(ms/1000)%60;
-    const m = Math.floor(ms/60000)%60;
-    const h = Math.floor(ms/3600000);
-    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
-  };
-  TimerInstance.prototype.updateDisplay = function(){
-    const now = Date.now();
-    const elapsed = this.acc + (this.running ? (now - this.startAt) : 0);
-    if(this.target > 0){
-      const remain = Math.max(0, this.target - elapsed);
-      this.display.textContent = this.format(remain);
-      if(remain === 0 && this.running) { this.stop(true); }
-    } else {
-      this.display.textContent = this.format(elapsed);
-    }
-  };
-  TimerInstance.prototype.tick = function(){
-    this.updateDisplay();
-    if(this.running) this.raf = requestAnimationFrame(()=>this.tick());
-  };
-  TimerInstance.prototype.start = function(){
-    const dur = this.durationFromInputs();
-    if(dur === 0 && this.acc === 0){ alert('Set a duration before starting. Use the ▲ ▼ controls to change time.'); return; }
-    this.target = dur;
-    if(this.running) return;
-    this.running = true;
-    this.startAt = Date.now();
-    this.status.textContent = 'running';
-    this.tick();
-  };
-  TimerInstance.prototype.stop = function(finished=false){
-    if(!this.running) return;
-    this.running = false;
-    const now = Date.now();
-    this.acc += (now - this.startAt);
-    this.startAt = 0;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.status.textContent = finished ? 'finished' : 'stopped';
-    this.updateDisplay();
-  };
-  TimerInstance.prototype.clear = function(){
-    if(this.running){ if(!confirm('Timer is running. Clear anyway?')) return; }
-    this.running = false;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.startAt = 0; this.acc = 0; this.target = 0;
-    this.status.textContent = 'stopped';
-    this.display.textContent = '00:00:00';
-    this.hIn.value = 0; this.mIn.value = 0; this.sIn.value = 0;
-  };
-
-  const A = new TimerInstance('A');
-  const B = new TimerInstance('B');
-
-  // wire basic controls
-  document.getElementById('startA').addEventListener('click', ()=> A.start());
-  document.getElementById('stopA').addEventListener('click', ()=> A.stop());
-  document.getElementById('clearA').addEventListener('click', ()=> A.clear());
-
-  document.getElementById('startB').addEventListener('click', ()=> B.start());
-  document.getElementById('stopB').addEventListener('click', ()=> B.stop());
-  document.getElementById('clearB').addEventListener('click', ()=> B.clear());
-
-  // arrow buttons behavior: increment/decrement target inputs
-  document.querySelectorAll('.arrow-btn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const tgt = btn.dataset.target;
-      const dir = btn.dataset.dir;
-      const el = document.getElementById(tgt);
-      if(!el) return;
-      const step = 1;
-      let val = Number(el.value) || 0;
-      if(dir === 'up') val += step;
-      else val = Math.max(0, val - step);
-      // clamp mins and secs
-      if(tgt.includes('mins') || tgt.includes('secs')){
-        if(val > 59) val = 59;
-      } else {
-        if(val > 999) val = 999;
+// Open hosted mini.html and push updates after handshake
+document.getElementById('openMini').addEventListener('click', ()=>{
+  const miniContent = `<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Mini</title><style>body{font-family:system-ui;margin:8px} .card{padding:12px;border-radius:8px;border:1px solid #eee;margin-bottom:8px}</style></head><body><div class="card"><div style="font-weight:700;color:#28e0c7">Current Task</div><div id="miniA">00:00:00</div></div><div class="card"><div style="font-weight:700;color:#28e0c7">Overall Session</div><div id="miniB">00:00:00</div></div><script>function ready(){ try{ window.opener && window.opener.postMessage({type:'kp_mini_ready'}, '*'); }catch(e){} } ready(); setTimeout(ready,80); window.addEventListener('message', ev=>{ try{ const m=ev.data; if(m && m.type==='kp_mini_update'){ if(m.timeA!==undefined) document.getElementById('miniA').textContent=m.timeA; if(m.timeB!==undefined) document.getElementById('miniB').textContent=m.timeB; } }catch(e){} }, false);<\/script></body></html>`;
+  const blob = new Blob([miniContent], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const opts = 'width=520,height=340,toolbar=no,menubar=no,location=no,status=no';
+  const w = window.open(url, '_blank', opts);
+  if(!w){ const mini = document.getElementById('miniPopup'); if(mini) mini.style.display='block'; URL.revokeObjectURL(url); return; }
+  function onMsg(ev){
+    try{
+      const msg = ev.data; if(!msg || typeof msg !== 'object') return;
+      if(msg.type==='kp_mini_ready' && ev.source === w){
+        const send = ()=>{ try{ const payload={ type:'kp_mini_update', timeA: document.getElementById('timeA')?.textContent||null, timeB: document.getElementById('timeB')?.textContent||null, statusA: document.getElementById('statusA')?.textContent||null, statusB: document.getElementById('statusB')?.textContent||null }; w.postMessage(payload,'*'); }catch(e){} };
+        send();
+        if(!w._kpInterval) w._kpInterval = setInterval(send,200);
       }
-      el.value = val;
-    });
-  });
-
-  // render UI initially
-  function renderInitial(){
-    renderOverall();
-    renderAttached('A'); renderAttached('B');
-    // restore notes
-    document.getElementById('noteA').value = state.notes['noteA'] || '';
-    document.getElementById('noteB').value = state.notes['noteB'] || '';
+    }catch(e){}
   }
-  renderInitial();
-
-  // save notes on input
-  document.getElementById('noteA').addEventListener('input', ()=> { state.notes['noteA'] = document.getElementById('noteA').value; saveAll(); });
-  document.getElementById('noteB').addEventListener('input', ()=> { state.notes['noteB'] = document.getElementById('noteB').value; saveAll(); });
-
-  // mini overlay open/close and drag
-  const mini = document.getElementById('miniPopup');
-  const miniHeader = document.getElementById('miniHeader');
-  document.getElementById('openMini').addEventListener('click', ()=>{
-    // show mini and position using saved pos if exists
-    mini.style.display = 'block';
-    const pos = JSON.parse(local<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Dual Timer with Tasks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --pink1: #ffd7e6;
-      --pink2: #ff7fbf;
-      --accent:#ff4d9e;
-      --panel:#fff5f9;
-      --card:#fff;
-      --text:#2b052e;
-      --muted:#6b3b4f;
-      --danger:#ff5b6b;
-      --turquoise:#28e0c7;
-      --font: 'Antic Didone', serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--font);
-      color:var(--text);
-      background: linear-gradient(180deg,var(--pink1),var(--pink2));
-      padding:16px;
-    }
-
-    /* layout */
-    #rootWrap { max-width:1280px; margin:0 auto; }
-    .app-wrap{ display:flex; gap:18px; align-items:flex-start; }
-    .timers{ flex:1; min-width:320px; }
-    .timer-card{
-      background:var(--panel);
-      padding:14px;
-      border-radius:12px;
-      margin-bottom:12px;
-      box-shadow:0 6px 18px rgba(43,5,46,0.12);
-      border:1px solid rgba(43,5,46,0.06);
-      position:relative;
-    }
-    .timer-title{ display:flex; justify-content:space-between; align-items:center; gap:8px }
-    .timer-title h2{ margin:0; font-size:1.05rem; color:var(--accent) }
-    .timer-time{ font-size:2.4rem; text-align:center; margin:10px 0; letter-spacing:0.5px }
-    .controls{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px }
-    .btn{ background:var(--accent); color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700 }
-    .muted{ color:var(--muted); font-size:0.9rem }
-
-    /* time inputs and arrow buttons */
-    .time-inputs{ display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap }
-    .time-group{ display:flex; flex-direction:column; align-items:center; background:transparent; }
-    .time-row{ display:flex; align-items:center; gap:6px; }
-    .time-group input[type="number"]{
-      width:64px; padding:6px 8px; border-radius:8px; border:1px solid rgba(43,5,46,0.08); text-align:center; font-size:1rem;
-      appearance: textfield;
-    }
-    .arrow-btn{ width:28px; height:28px; border-radius:6px; border:1px solid rgba(43,5,46,0.06); background:#fff; cursor:pointer }
-    .time-label{ font-size:0.75rem; color:var(--muted); margin-top:6px }
-
-    /* notes collapse */
-    .notes-toggle{ display:flex; justify-content:flex-end; margin-top:8px; gap:8px; align-items:center; }
-    .note-area{ width:100%; margin-top:8px; padding:10px; border-radius:8px; background:var(--card); border:1px solid rgba(43,5,46,0.06); color:var(--text); min-height:60px; resize:vertical }
-    .note-collapsed{ display:none; }
-
-    /* attached tasks */
-    .attached-task{ display:flex; justify-content:space-between; gap:8px; padding:6px; border-radius:6px; margin-top:8px; background:rgba(43,5,46,0.03) }
-
-    /* sidebar */
-    .sidebar{ width:340px; background:var(--panel); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(43,5,46,0.08); border:1px solid rgba(43,5,46,0.04) }
-    .sidebar h3{ margin:0; color:var(--accent) }
-    .overall-add{ display:flex; gap:8px; margin-top:8px }
-    .task-input{ flex:1; padding:8px; border-radius:8px; border:1px solid rgba(43,5,46,0.06) }
-    .overall-list{ margin-top:10px; max-height:46vh; overflow:auto; padding-right:6px }
-    .task-row{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px; border-radius:8px; background:rgba(43,5,46,0.02); margin-bottom:8px }
-    .task-actions button{ background:transparent; color:var(--accent); border:0; font-size:1.05rem; cursor:pointer }
-
-    /* pin and draggable */
-    .pin{ cursor:pointer; font-size:1.2rem; padding:6px; color:var(--muted) }
-    .pin.turq{ color:var(--turquoise); text-shadow:0 0 6px rgba(40,224,199,0.25) }
-    .draggable { cursor:grab; }
-
-    /* mini overlay */
-    .floating-popup{ position:fixed; right:18px; bottom:18px; width:320px; max-width:90vw; z-index:9999; background:var(--panel); border-radius:10px; padding:10px; box-shadow:0 10px 30px rgba(43,5,46,0.12); border:1px solid rgba(43,5,46,0.06); display:none; }
-    .mini-close{ background:var(--turquoise); color:#fff; border:0; padding:6px 8px; border-radius:8px; cursor:pointer }
-
-    @media(max-width:900px){
-      .app-wrap{flex-direction:column}
-      .sidebar{width:100%}
-    }
-  </style>
-</head>
-<body>
-  <div id="rootWrap">
-    <div class="app-wrap" id="appWrap">
-      <div class="timers" id="timersRoot">
-        <!-- Timer A -->
-        <div class="timer-card" id="timer1">
-          <div class="timer-title">
-            <h2 id="titleA">Current Task</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinA" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusA">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeA">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursA" data-dir="up">▲</button>
-                <input id="hoursA" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsA" data-dir="up">▲</button>
-                <input id="minsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsA" data-dir="up">▲</button>
-                <input id="secsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedA"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteA" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteA" class="note-area note-collapsed" placeholder="Notes for Timer A (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startA">Start</button>
-            <button class="btn" id="stopA">Stop</button>
-            <button class="btn" id="clearA">Clear</button>
-          </div>
-        </div>
-
-        <!-- Timer B -->
-        <div class="timer-card" id="timer2">
-          <div class="timer-title">
-            <h2 id="titleB">Overall Session</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinB" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusB">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeB">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursB" data-dir="up">▲</button>
-                <input id="hoursB" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsB" data-dir="up">▲</button>
-                <input id="minsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsB" data-dir="up">▲</button>
-                <input id="secsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedB"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteB" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteB" class="note-area note-collapsed" placeholder="Notes for Timer B (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startB">Start</button>
-            <button class="btn" id="stopB">Stop</button>
-            <button class="btn" id="clearB">Clear</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <aside class="sidebar" id="taskSidebar">
-        <h3>Overall Session</h3>
-        <div class="overall-add">
-          <input id="newTaskName" class="task-input" placeholder="New task name">
-          <button class="btn" id="addTaskBtn">Add</button>
-        </div>
-        <div class="muted" style="margin-top:6px">Click +A or +B to attach to a timer. Hover attached tasks to remove.</div>
-        <div class="overall-list" id="overallList"></div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="btn" id="clearAll">Clear All</button>
-          <button class="btn" id="openMini">Open Mini</button>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Mini overlay (draggable in-page only) -->
-  <div id="miniPopup" class="floating-popup" role="dialog" aria-label="Mini timer overlay">
-    <div id="miniHeader" style="display:flex;justify-content:space-between;align-items:center;cursor:move;">
-      <strong>Timer Overlay</strong>
-      <button id="miniClose" class="mini-close" aria-label="Close mini">X</button>
-    </div>
-    <div style="margin-top:8px;">
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;margin-bottom:8px;">
-        <div style="font-weight:700">A</div>
-        <div id="miniTimeA" style="font-size:1.2rem">00:00:00</div>
-      </div>
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;">
-        <div style="font-weight:700">B</div>
-        <div id="miniTimeB" style="font-size:1.2rem">00:00:00</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  // persistence keys
-  const STORE_KEY = 'kp_tasks_v1';
-  const ATT_A = 'kp_attachedA';
-  const ATT_B = 'kp_attachedB';
-  const NOTES = 'kp_notes_v2';
-  const POS = 'kp_main_pos';
-
-  const state = {
-    tasks: JSON.parse(localStorage.getItem(STORE_KEY) || '[]'),
-    attachedA: JSON.parse(localStorage.getItem(ATT_A) || '[]'),
-    attachedB: JSON.parse(localStorage.getItem(ATT_B) || '[]'),
-    notes: JSON.parse(localStorage.getItem(NOTES) || '{}')
-  };
-  function saveAll(){
-    localStorage.setItem(STORE_KEY, JSON.stringify(state.tasks));
-    localStorage.setItem(ATT_A, JSON.stringify(state.attachedA));
-    localStorage.setItem(ATT_B, JSON.stringify(state.attachedB));
-    localStorage.setItem(NOTES, JSON.stringify(state.notes));
-  }
-
-  // utils
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  // render overall list
-  function renderOverall(){
-    const root = document.getElementById('overallList');
-    root.innerHTML = '';
-    state.tasks.forEach((t,i)=>{
-      const div = document.createElement('div');
-      div.className = 'task-row';
-      div.innerHTML = `<div class="task-name">${escapeHtml(t)}</div>
-        <div class="task-actions">
-          <button data-idx="${i}" data-target="A">＋A</button>
-          <button data-idx="${i}" data-target="B">＋B</button>
-        </div>`;
-      root.appendChild(div);
-    });
-    root.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = ()=> {
-        const idx = Number(btn.dataset.idx);
-        attachToTimer(state.tasks[idx], btn.dataset.target);
-      };
-    });
-  }
-
-  function renderAttached(which){
-    const container = document.getElementById(which==='A' ? 'attachedA' : 'attachedB');
-    const list = which==='A' ? state.attachedA : state.attachedB;
-    container.innerHTML = '';
-    list.forEach((t,i)=>{
-      const row = document.createElement('div');
-      row.className = 'attached-task';
-      row.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`;
-      container.appendChild(row);
-    });
-    container.querySelectorAll('.del').forEach(b=>{
-      b.onclick = ()=> {
-        const w = b.dataset.which, i = Number(b.dataset.idx);
-        if(w==='A') state.attachedA.splice(i,1); else state.attachedB.splice(i,1);
-        saveAll(); renderAttached('A'); renderAttached('B');
-      };
-    });
-  }
-
-  // ADD / CLEAR tasks
-  document.getElementById('addTaskBtn').addEventListener('click', ()=>{
-    const v = document.getElementById('newTaskName').value.trim();
-    if(!v) return;
-    state.tasks.push(v);
-    document.getElementById('newTaskName').value = '';
-    saveAll(); renderOverall();
-  });
-  document.getElementById('clearAll').addEventListener('click', ()=>{
-    if(!confirm('Clear all saved tasks?')) return;
-    state.tasks = []; saveAll(); renderOverall(); renderAttached('A'); renderAttached('B');
-  });
-
-  function attachToTimer(name, which){
-    if(which==='A'){ state.attachedA.push(name); document.getElementById('noteA').value = name; }
-    else { state.attachedB.push(name); document.getElementById('noteB').value = name; }
-    saveAll(); renderAttached('A'); renderAttached('B');
-  }
-
-  // show/hide notes toggle
-  function setupNoteToggle(btnId, noteId){
-    const btn = document.getElementById(btnId), note = document.getElementById(noteId);
-    // restore note
-    note.value = state.notes[noteId] || '';
-    btn.addEventListener('click', ()=> {
-      const isHidden = note.classList.contains('note-collapsed');
-      if(isHidden){ note.classList.remove('note-collapsed'); btn.textContent = 'Hide Notes'; }
-      else { note.classList.add('note-collapsed'); btn.textContent = 'Show Notes'; }
-    });
-    note.addEventListener('input', ()=> { state.notes[noteId] = note.value; saveAll(); });
-  }
-  setupNoteToggle('toggleNoteA','noteA');
-  setupNoteToggle('toggleNoteB','noteB');
-
-  // timer logic (countdown by duration from inputs)
-  function TimerInstance(prefix){
-    this.prefix = prefix;
-    this.display = document.getElementById('time' + prefix);
-    this.status = document.getElementById('status' + prefix);
-    this.hIn = document.getElementById('hours' + prefix);
-    this.mIn = document.getElementById('mins' + prefix);
-    this.sIn = document.getElementById('secs' + prefix);
-    this.running = false;
-    this.startAt = 0;
-    this.acc = 0;
-    this.target = 0;
-    this.raf = null;
-  }
-  TimerInstance.prototype.durationFromInputs = function(){
-    const h = Math.max(0, Number(this.hIn.value) || 0);
-    let m = Math.max(0, Number(this.mIn.value) || 0);
-    let s = Math.max(0, Number(this.sIn.value) || 0);
-    if(m>59) m = 59; if(s>59) s = 59;
-    return ((h*3600)+(m*60)+s)*1000;
-  };
-  TimerInstance.prototype.format = function(ms){
-    const s = Math.floor(ms/1000)%60;
-    const m = Math.floor(ms/60000)%60;
-    const h = Math.floor(ms/3600000);
-    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
-  };
-  TimerInstance.prototype.updateDisplay = function(){
-    const now = Date.now();
-    const elapsed = this.acc + (this.running ? (now - this.startAt) : 0);
-    if(this.target > 0){
-      const remain = Math.max(0, this.target - elapsed);
-      this.display.textContent = this.format(remain);
-      if(remain === 0 && this.running) { this.stop(true); }
-    } else {
-      this.display.textContent = this.format(elapsed);
-    }
-  };
-  TimerInstance.prototype.tick = function(){
-    this.updateDisplay();
-    if(this.running) this.raf = requestAnimationFrame(()=>this.tick());
-  };
-  TimerInstance.prototype.start = function(){
-    const dur = this.durationFromInputs();
-    if(dur === 0 && this.acc === 0){ alert('Set a duration before starting. Use the ▲ ▼ controls to change time.'); return; }
-    this.target = dur;
-    if(this.running) return;
-    this.running = true;
-    this.startAt = Date.now();
-    this.status.textContent = 'running';
-    this.tick();
-  };
-  TimerInstance.prototype.stop = function(finished=false){
-    if(!this.running) return;
-    this.running = false;
-    const now = Date.now();
-    this.acc += (now - this.startAt);
-    this.startAt = 0;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.status.textContent = finished ? 'finished' : 'stopped';
-    this.updateDisplay();
-  };
-  TimerInstance.prototype.clear = function(){
-    if(this.running){ if(!confirm('Timer is running. Clear anyway?')) return; }
-    this.running = false;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.startAt = 0; this.acc = 0; this.target = 0;
-    this.status.textContent = 'stopped';
-    this.display.textContent = '00:00:00';
-    this.hIn.value = 0; this.mIn.value = 0; this.sIn.value = 0;
-  };
-
-  const A = new TimerInstance('A');
-  const B = new TimerInstance('B');
-
-  // wire basic controls
-  document.getElementById('startA').addEventListener('click', ()=> A.start());
-  document.getElementById('stopA').addEventListener('click', ()=> A.stop());
-  document.getElementById('clearA').addEventListener('click', ()=> A.clear());
-
-  document.getElementById('startB').addEventListener('click', ()=> B.start());
-  document.getElementById('stopB').addEventListener('click', ()=> B.stop());
-  document.getElementById('clearB').addEventListener('click', ()=> B.clear());
-
-  // arrow buttons behavior: increment/decrement target inputs
-  document.querySelectorAll('.arrow-btn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const tgt = btn.dataset.target;
-      const dir = btn.dataset.dir;
-      const el = document.getElementById(tgt);
-      if(!el) return;
-      const step = 1;
-      let val = Number(el.value) || 0;
-      if(dir === 'up') val += step;
-      else val = Math.max(0, val - step);
-      // clamp mins and secs
-      if(tgt.includes('mins') || tgt.includes('secs')){
-        if(val > 59) val = 59;
-      } else {
-        if(val > 999) val = 999;
-      }
-      el.value = val;
-    });
-  });
-
-  // render UI initially
-  function renderInitial(){
-    renderOverall();
-    renderAttached('A'); renderAttached('B');
-    // restore notes
-    document.getElementById('noteA').value = state.notes['noteA'] || '';
-    document.getElementById('noteB').value = state.notes['noteB'] || '';
-  }
-  renderInitial();
-
-  // save notes on input
-  document.getElementById('noteA').addEventListener('input', ()=> { state.notes['noteA'] = document.getElementById('noteA').value; saveAll(); });
-  document.getElementById('noteB').addEventListener('input', ()=> { state.notes['noteB'] = document.getElementById('noteB').value; saveAll(); });
-
-  // mini overlay open/close and drag
-  const mini = document.getElementById('miniPopup');
-  const miniHeader = document.getElementById('miniHeader');
-  document.getElementById('openMini').addEventListener('click', ()=>{
-    // show mini and position using saved pos if exists
-    mini.style.display = 'block';
-    const pos = JSON.parse(local<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Dual Timer with Tasks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --pink1: #ffd7e6;
-      --pink2: #ff7fbf;
-      --accent:#ff4d9e;
-      --panel:#fff5f9;
-      --card:#fff;
-      --text:#2b052e;
-      --muted:#6b3b4f;
-      --danger:#ff5b6b;
-      --turquoise:#28e0c7;
-      --font: 'Antic Didone', serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--font);
-      color:var(--text);
-      background: linear-gradient(180deg,var(--pink1),var(--pink2));
-      padding:16px;
-    }
-
-    /* layout */
-    #rootWrap { max-width:1280px; margin:0 auto; }
-    .app-wrap{ display:flex; gap:18px; align-items:flex-start; }
-    .timers{ flex:1; min-width:320px; }
-    .timer-card{
-      background:var(--panel);
-      padding:14px;
-      border-radius:12px;
-      margin-bottom:12px;
-      box-shadow:0 6px 18px rgba(43,5,46,0.12);
-      border:1px solid rgba(43,5,46,0.06);
-      position:relative;
-    }
-    .timer-title{ display:flex; justify-content:space-between; align-items:center; gap:8px }
-    .timer-title h2{ margin:0; font-size:1.05rem; color:var(--accent) }
-    .timer-time{ font-size:2.4rem; text-align:center; margin:10px 0; letter-spacing:0.5px }
-    .controls{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px }
-    .btn{ background:var(--accent); color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700 }
-    .muted{ color:var(--muted); font-size:0.9rem }
-
-    /* time inputs and arrow buttons */
-    .time-inputs{ display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap }
-    .time-group{ display:flex; flex-direction:column; align-items:center; background:transparent; }
-    .time-row{ display:flex; align-items:center; gap:6px; }
-    .time-group input[type="number"]{
-      width:64px; padding:6px 8px; border-radius:8px; border:1px solid rgba(43,5,46,0.08); text-align:center; font-size:1rem;
-      appearance: textfield;
-    }
-    .arrow-btn{ width:28px; height:28px; border-radius:6px; border:1px solid rgba(43,5,46,0.06); background:#fff; cursor:pointer }
-    .time-label{ font-size:0.75rem; color:var(--muted); margin-top:6px }
-
-    /* notes collapse */
-    .notes-toggle{ display:flex; justify-content:flex-end; margin-top:8px; gap:8px; align-items:center; }
-    .note-area{ width:100%; margin-top:8px; padding:10px; border-radius:8px; background:var(--card); border:1px solid rgba(43,5,46,0.06); color:var(--text); min-height:60px; resize:vertical }
-    .note-collapsed{ display:none; }
-
-    /* attached tasks */
-    .attached-task{ display:flex; justify-content:space-between; gap:8px; padding:6px; border-radius:6px; margin-top:8px; background:rgba(43,5,46,0.03) }
-
-    /* sidebar */
-    .sidebar{ width:340px; background:var(--panel); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(43,5,46,0.08); border:1px solid rgba(43,5,46,0.04) }
-    .sidebar h3{ margin:0; color:var(--accent) }
-    .overall-add{ display:flex; gap:8px; margin-top:8px }
-    .task-input{ flex:1; padding:8px; border-radius:8px; border:1px solid rgba(43,5,46,0.06) }
-    .overall-list{ margin-top:10px; max-height:46vh; overflow:auto; padding-right:6px }
-    .task-row{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px; border-radius:8px; background:rgba(43,5,46,0.02); margin-bottom:8px }
-    .task-actions button{ background:transparent; color:var(--accent); border:0; font-size:1.05rem; cursor:pointer }
-
-    /* pin and draggable */
-    .pin{ cursor:pointer; font-size:1.2rem; padding:6px; color:var(--muted) }
-    .pin.turq{ color:var(--turquoise); text-shadow:0 0 6px rgba(40,224,199,0.25) }
-    .draggable { cursor:grab; }
-
-    /* mini overlay */
-    .floating-popup{ position:fixed; right:18px; bottom:18px; width:320px; max-width:90vw; z-index:9999; background:var(--panel); border-radius:10px; padding:10px; box-shadow:0 10px 30px rgba(43,5,46,0.12); border:1px solid rgba(43,5,46,0.06); display:none; }
-    .mini-close{ background:var(--turquoise); color:#fff; border:0; padding:6px 8px; border-radius:8px; cursor:pointer }
-
-    @media(max-width:900px){
-      .app-wrap{flex-direction:column}
-      .sidebar{width:100%}
-    }
-  </style>
-</head>
-<body>
-  <div id="rootWrap">
-    <div class="app-wrap" id="appWrap">
-      <div class="timers" id="timersRoot">
-        <!-- Timer A -->
-        <div class="timer-card" id="timer1">
-          <div class="timer-title">
-            <h2 id="titleA">Current Task</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinA" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusA">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeA">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursA" data-dir="up">▲</button>
-                <input id="hoursA" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsA" data-dir="up">▲</button>
-                <input id="minsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsA" data-dir="up">▲</button>
-                <input id="secsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedA"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteA" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteA" class="note-area note-collapsed" placeholder="Notes for Timer A (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startA">Start</button>
-            <button class="btn" id="stopA">Stop</button>
-            <button class="btn" id="clearA">Clear</button>
-          </div>
-        </div>
-
-        <!-- Timer B -->
-        <div class="timer-card" id="timer2">
-          <div class="timer-title">
-            <h2 id="titleB">Overall Session</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinB" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusB">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeB">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursB" data-dir="up">▲</button>
-                <input id="hoursB" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsB" data-dir="up">▲</button>
-                <input id="minsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsB" data-dir="up">▲</button>
-                <input id="secsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedB"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteB" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteB" class="note-area note-collapsed" placeholder="Notes for Timer B (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startB">Start</button>
-            <button class="btn" id="stopB">Stop</button>
-            <button class="btn" id="clearB">Clear</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <aside class="sidebar" id="taskSidebar">
-        <h3>Overall Session</h3>
-        <div class="overall-add">
-          <input id="newTaskName" class="task-input" placeholder="New task name">
-          <button class="btn" id="addTaskBtn">Add</button>
-        </div>
-        <div class="muted" style="margin-top:6px">Click +A or +B to attach to a timer. Hover attached tasks to remove.</div>
-        <div class="overall-list" id="overallList"></div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="btn" id="clearAll">Clear All</button>
-          <button class="btn" id="openMini">Open Mini</button>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Mini overlay (draggable in-page only) -->
-  <div id="miniPopup" class="floating-popup" role="dialog" aria-label="Mini timer overlay">
-    <div id="miniHeader" style="display:flex;justify-content:space-between;align-items:center;cursor:move;">
-      <strong>Timer Overlay</strong>
-      <button id="miniClose" class="mini-close" aria-label="Close mini">X</button>
-    </div>
-    <div style="margin-top:8px;">
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;margin-bottom:8px;">
-        <div style="font-weight:700">A</div>
-        <div id="miniTimeA" style="font-size:1.2rem">00:00:00</div>
-      </div>
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;">
-        <div style="font-weight:700">B</div>
-        <div id="miniTimeB" style="font-size:1.2rem">00:00:00</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  // persistence keys
-  const STORE_KEY = 'kp_tasks_v1';
-  const ATT_A = 'kp_attachedA';
-  const ATT_B = 'kp_attachedB';
-  const NOTES = 'kp_notes_v2';
-  const POS = 'kp_main_pos';
-
-  const state = {
-    tasks: JSON.parse(localStorage.getItem(STORE_KEY) || '[]'),
-    attachedA: JSON.parse(localStorage.getItem(ATT_A) || '[]'),
-    attachedB: JSON.parse(localStorage.getItem(ATT_B) || '[]'),
-    notes: JSON.parse(localStorage.getItem(NOTES) || '{}')
-  };
-  function saveAll(){
-    localStorage.setItem(STORE_KEY, JSON.stringify(state.tasks));
-    localStorage.setItem(ATT_A, JSON.stringify(state.attachedA));
-    localStorage.setItem(ATT_B, JSON.stringify(state.attachedB));
-    localStorage.setItem(NOTES, JSON.stringify(state.notes));
-  }
-
-  // utils
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  // render overall list
-  function renderOverall(){
-    const root = document.getElementById('overallList');
-    root.innerHTML = '';
-    state.tasks.forEach((t,i)=>{
-      const div = document.createElement('div');
-      div.className = 'task-row';
-      div.innerHTML = `<div class="task-name">${escapeHtml(t)}</div>
-        <div class="task-actions">
-          <button data-idx="${i}" data-target="A">＋A</button>
-          <button data-idx="${i}" data-target="B">＋B</button>
-        </div>`;
-      root.appendChild(div);
-    });
-    root.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = ()=> {
-        const idx = Number(btn.dataset.idx);
-        attachToTimer(state.tasks[idx], btn.dataset.target);
-      };
-    });
-  }
-
-  function renderAttached(which){
-    const container = document.getElementById(which==='A' ? 'attachedA' : 'attachedB');
-    const list = which==='A' ? state.attachedA : state.attachedB;
-    container.innerHTML = '';
-    list.forEach((t,i)=>{
-      const row = document.createElement('div');
-      row.className = 'attached-task';
-      row.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`;
-      container.appendChild(row);
-    });
-    container.querySelectorAll('.del').forEach(b=>{
-      b.onclick = ()=> {
-        const w = b.dataset.which, i = Number(b.dataset.idx);
-        if(w==='A') state.attachedA.splice(i,1); else state.attachedB.splice(i,1);
-        saveAll(); renderAttached('A'); renderAttached('B');
-      };
-    });
-  }
-
-  // ADD / CLEAR tasks
-  document.getElementById('addTaskBtn').addEventListener('click', ()=>{
-    const v = document.getElementById('newTaskName').value.trim();
-    if(!v) return;
-    state.tasks.push(v);
-    document.getElementById('newTaskName').value = '';
-    saveAll(); renderOverall();
-  });
-  document.getElementById('clearAll').addEventListener('click', ()=>{
-    if(!confirm('Clear all saved tasks?')) return;
-    state.tasks = []; saveAll(); renderOverall(); renderAttached('A'); renderAttached('B');
-  });
-
-  function attachToTimer(name, which){
-    if(which==='A'){ state.attachedA.push(name); document.getElementById('noteA').value = name; }
-    else { state.attachedB.push(name); document.getElementById('noteB').value = name; }
-    saveAll(); renderAttached('A'); renderAttached('B');
-  }
-
-  // show/hide notes toggle
-  function setupNoteToggle(btnId, noteId){
-    const btn = document.getElementById(btnId), note = document.getElementById(noteId);
-    // restore note
-    note.value = state.notes[noteId] || '';
-    btn.addEventListener('click', ()=> {
-      const isHidden = note.classList.contains('note-collapsed');
-      if(isHidden){ note.classList.remove('note-collapsed'); btn.textContent = 'Hide Notes'; }
-      else { note.classList.add('note-collapsed'); btn.textContent = 'Show Notes'; }
-    });
-    note.addEventListener('input', ()=> { state.notes[noteId] = note.value; saveAll(); });
-  }
-  setupNoteToggle('toggleNoteA','noteA');
-  setupNoteToggle('toggleNoteB','noteB');
-
-  // timer logic (countdown by duration from inputs)
-  function TimerInstance(prefix){
-    this.prefix = prefix;
-    this.display = document.getElementById('time' + prefix);
-    this.status = document.getElementById('status' + prefix);
-    this.hIn = document.getElementById('hours' + prefix);
-    this.mIn = document.getElementById('mins' + prefix);
-    this.sIn = document.getElementById('secs' + prefix);
-    this.running = false;
-    this.startAt = 0;
-    this.acc = 0;
-    this.target = 0;
-    this.raf = null;
-  }
-  TimerInstance.prototype.durationFromInputs = function(){
-    const h = Math.max(0, Number(this.hIn.value) || 0);
-    let m = Math.max(0, Number(this.mIn.value) || 0);
-    let s = Math.max(0, Number(this.sIn.value) || 0);
-    if(m>59) m = 59; if(s>59) s = 59;
-    return ((h*3600)+(m*60)+s)*1000;
-  };
-  TimerInstance.prototype.format = function(ms){
-    const s = Math.floor(ms/1000)%60;
-    const m = Math.floor(ms/60000)%60;
-    const h = Math.floor(ms/3600000);
-    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
-  };
-  TimerInstance.prototype.updateDisplay = function(){
-    const now = Date.now();
-    const elapsed = this.acc + (this.running ? (now - this.startAt) : 0);
-    if(this.target > 0){
-      const remain = Math.max(0, this.target - elapsed);
-      this.display.textContent = this.format(remain);
-      if(remain === 0 && this.running) { this.stop(true); }
-    } else {
-      this.display.textContent = this.format(elapsed);
-    }
-  };
-  TimerInstance.prototype.tick = function(){
-    this.updateDisplay();
-    if(this.running) this.raf = requestAnimationFrame(()=>this.tick());
-  };
-  TimerInstance.prototype.start = function(){
-    const dur = this.durationFromInputs();
-    if(dur === 0 && this.acc === 0){ alert('Set a duration before starting. Use the ▲ ▼ controls to change time.'); return; }
-    this.target = dur;
-    if(this.running) return;
-    this.running = true;
-    this.startAt = Date.now();
-    this.status.textContent = 'running';
-    this.tick();
-  };
-  TimerInstance.prototype.stop = function(finished=false){
-    if(!this.running) return;
-    this.running = false;
-    const now = Date.now();
-    this.acc += (now - this.startAt);
-    this.startAt = 0;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.status.textContent = finished ? 'finished' : 'stopped';
-    this.updateDisplay();
-  };
-  TimerInstance.prototype.clear = function(){
-    if(this.running){ if(!confirm('Timer is running. Clear anyway?')) return; }
-    this.running = false;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.startAt = 0; this.acc = 0; this.target = 0;
-    this.status.textContent = 'stopped';
-    this.display.textContent = '00:00:00';
-    this.hIn.value = 0; this.mIn.value = 0; this.sIn.value = 0;
-  };
-
-  const A = new TimerInstance('A');
-  const B = new TimerInstance('B');
-
-  // wire basic controls
-  document.getElementById('startA').addEventListener('click', ()=> A.start());
-  document.getElementById('stopA').addEventListener('click', ()=> A.stop());
-  document.getElementById('clearA').addEventListener('click', ()=> A.clear());
-
-  document.getElementById('startB').addEventListener('click', ()=> B.start());
-  document.getElementById('stopB').addEventListener('click', ()=> B.stop());
-  document.getElementById('clearB').addEventListener('click', ()=> B.clear());
-
-  // arrow buttons behavior: increment/decrement target inputs
-  document.querySelectorAll('.arrow-btn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const tgt = btn.dataset.target;
-      const dir = btn.dataset.dir;
-      const el = document.getElementById(tgt);
-      if(!el) return;
-      const step = 1;
-      let val = Number(el.value) || 0;
-      if(dir === 'up') val += step;
-      else val = Math.max(0, val - step);
-      // clamp mins and secs
-      if(tgt.includes('mins') || tgt.includes('secs')){
-        if(val > 59) val = 59;
-      } else {
-        if(val > 999) val = 999;
-      }
-      el.value = val;
-    });
-  });<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Dual Timer with Tasks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --pink1: #ffd7e6;
-      --pink2: #ff7fbf;
-      --accent:#ff4d9e;
-      --panel:#fff5f9;
-      --card:#fff;
-      --text:#2b052e;
-      --muted:#6b3b4f;
-      --danger:#ff5b6b;
-      --turquoise:#28e0c7;
-      --font: 'Antic Didone', serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--font);
-      color:var(--text);
-      background: linear-gradient(180deg,var(--pink1),var(--pink2));
-      padding:16px;
-    }
-
-    /* layout */
-    #rootWrap { max-width:1280px; margin:0 auto; }
-    .app-wrap{ display:flex; gap:18px; align-items:flex-start; }
-    .timers{ flex:1; min-width:320px; }
-    .timer-card{
-      background:var(--panel);
-      padding:14px;
-      border-radius:12px;
-      margin-bottom:12px;
-      box-shadow:0 6px 18px rgba(43,5,46,0.12);
-      border:1px solid rgba(43,5,46,0.06);
-      position:relative;
-    }
-    .timer-title{ display:flex; justify-content:space-between; align-items:center; gap:8px }
-    .timer-title h2{ margin:0; font-size:1.05rem; color:var(--accent) }
-    .timer-time{ font-size:2.4rem; text-align:center; margin:10px 0; letter-spacing:0.5px }
-    .controls{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px }
-    .btn{ background:var(--accent); color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700 }
-    .muted{ color:var(--muted); font-size:0.9rem }
-
-    /* time inputs and arrow buttons */
-    .time-inputs{ display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap }
-    .time-group{ display:flex; flex-direction:column; align-items:center; background:transparent; }
-    .time-row{ display:flex; align-items:center; gap:6px; }
-    .time-group input[type="number"]{
-      width:64px; padding:6px 8px; border-radius:8px; border:1px solid rgba(43,5,46,0.08); text-align:center; font-size:1rem;
-      appearance: textfield;
-    }
-    .arrow-btn{ width:28px; height:28px; border-radius:6px; border:1px solid rgba(43,5,46,0.06); background:#fff; cursor:pointer }
-    .time-label{ font-size:0.75rem; color:var(--muted); margin-top:6px }
-
-    /* notes collapse */
-    .notes-toggle{ display:flex; justify-content:flex-end; margin-top:8px; gap:8px; align-items:center; }
-    .note-area{ width:100%; margin-top:8px; padding:10px; border-radius:8px; background:var(--card); border:1px solid rgba(43,5,46,0.06); color:var(--text); min-height:60px; resize:vertical }
-    .note-collapsed{ display:none; }
-
-    /* attached tasks */
-    .attached-task{ display:flex; justify-content:space-between; gap:8px; padding:6px; border-radius:6px; margin-top:8px; background:rgba(43,5,46,0.03) }
-
-    /* sidebar */
-    .sidebar{ width:340px; background:var(--panel); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(43,5,46,0.08); border:1px solid rgba(43,5,46,0.04) }
-    .sidebar h3{ margin:0; color:var(--accent) }
-    .overall-add{ display:flex; gap:8px; margin-top:8px }
-    .task-input{ flex:1; padding:8px; border-radius:8px; border:1px solid rgba(43,5,46,0.06) }
-    .overall-list{ margin-top:10px; max-height:46vh; overflow:auto; padding-right:6px }
-    .task-row{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px; border-radius:8px; background:rgba(43,5,46,0.02); margin-bottom:8px }
-    .task-actions button{ background:transparent; color:var(--accent); border:0; font-size:1.05rem; cursor:pointer }
-
-    /* pin and draggable */
-    .pin{ cursor:pointer; font-size:1.2rem; padding:6px; color:var(--muted) }
-    .pin.turq{ color:var(--turquoise); text-shadow:0 0 6px rgba(40,224,199,0.25) }
-    .draggable { cursor:grab; }
-
-    /* mini overlay */
-    .floating-popup{ position:fixed; right:18px; bottom:18px; width:320px; max-width:90vw; z-index:9999; background:var(--panel); border-radius:10px; padding:10px; box-shadow:0 10px 30px rgba(43,5,46,0.12); border:1px solid rgba(43,5,46,0.06); display:none; }
-    .mini-close{ background:var(--turquoise); color:#fff; border:0; padding:6px 8px; border-radius:8px; cursor:pointer }
-
-    @media(max-width:900px){
-      .app-wrap{flex-direction:column}
-      .sidebar{width:100%}
-    }
-  </style>
-</head>
-<body>
-  <div id="rootWrap">
-    <div class="app-wrap" id="appWrap">
-      <div class="timers" id="timersRoot">
-        <!-- Timer A -->
-        <div class="timer-card" id="timer1">
-          <div class="timer-title">
-            <h2 id="titleA">Current Task</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinA" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusA">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeA">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursA" data-dir="up">▲</button>
-                <input id="hoursA" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsA" data-dir="up">▲</button>
-                <input id="minsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsA" data-dir="up">▲</button>
-                <input id="secsA" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsA" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedA"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteA" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteA" class="note-area note-collapsed" placeholder="Notes for Timer A (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startA">Start</button>
-            <button class="btn" id="stopA">Stop</button>
-            <button class="btn" id="clearA">Clear</button>
-          </div>
-        </div>
-
-        <!-- Timer B -->
-        <div class="timer-card" id="timer2">
-          <div class="timer-title">
-            <h2 id="titleB">Overall Session</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span id="pinB" class="pin" title="Toggle pin (makes widget draggable)">📌</span>
-              <span class="muted" id="statusB">stopped</span>
-            </div>
-          </div>
-          <div class="timer-time" id="timeB">00:00:00</div>
-
-          <div class="time-inputs">
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="hoursB" data-dir="up">▲</button>
-                <input id="hoursB" type="number" min="0" max="999" value="0" />
-                <button class="arrow-btn" data-target="hoursB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Hours</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="minsB" data-dir="up">▲</button>
-                <input id="minsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="minsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Minutes</div>
-            </div>
-
-            <div class="time-group">
-              <div class="time-row">
-                <button class="arrow-btn" data-target="secsB" data-dir="up">▲</button>
-                <input id="secsB" type="number" min="0" max="59" value="0" />
-                <button class="arrow-btn" data-target="secsB" data-dir="down">▼</button>
-              </div>
-              <div class="time-label">Seconds</div>
-            </div>
-          </div>
-
-          <div id="attachedB"></div>
-
-          <div class="notes-toggle">
-            <button id="toggleNoteB" class="btn" style="background:transparent;color:var(--accent);border:1px solid rgba(43,5,46,0.06);padding:6px 8px">Show Notes</button>
-          </div>
-          <textarea id="noteB" class="note-area note-collapsed" placeholder="Notes for Timer B (saved)"></textarea>
-
-          <div class="controls">
-            <button class="btn" id="startB">Start</button>
-            <button class="btn" id="stopB">Stop</button>
-            <button class="btn" id="clearB">Clear</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <aside class="sidebar" id="taskSidebar">
-        <h3>Overall Session</h3>
-        <div class="overall-add">
-          <input id="newTaskName" class="task-input" placeholder="New task name">
-          <button class="btn" id="addTaskBtn">Add</button>
-        </div>
-        <div class="muted" style="margin-top:6px">Click +A or +B to attach to a timer. Hover attached tasks to remove.</div>
-        <div class="overall-list" id="overallList"></div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="btn" id="clearAll">Clear All</button>
-          <button class="btn" id="openMini">Open Mini</button>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Mini overlay (draggable in-page only) -->
-  <div id="miniPopup" class="floating-popup" role="dialog" aria-label="Mini timer overlay">
-    <div id="miniHeader" style="display:flex;justify-content:space-between;align-items:center;cursor:move;">
-      <strong>Timer Overlay</strong>
-      <button id="miniClose" class="mini-close" aria-label="Close mini">X</button>
-    </div>
-    <div style="margin-top:8px;">
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;margin-bottom:8px;">
-        <div style="font-weight:700">A</div>
-        <div id="miniTimeA" style="font-size:1.2rem">00:00:00</div>
-      </div>
-      <div style="padding:8px;background:rgba(43,5,46,0.02);border-radius:8px;">
-        <div style="font-weight:700">B</div>
-        <div id="miniTimeB" style="font-size:1.2rem">00:00:00</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  // persistence keys
-  const STORE_KEY = 'kp_tasks_v1';
-  const ATT_A = 'kp_attachedA';
-  const ATT_B = 'kp_attachedB';
-  const NOTES = 'kp_notes_v2';
-  const POS = 'kp_main_pos';
-
-  const state = {
-    tasks: JSON.parse(localStorage.getItem(STORE_KEY) || '[]'),
-    attachedA: JSON.parse(localStorage.getItem(ATT_A) || '[]'),
-    attachedB: JSON.parse(localStorage.getItem(ATT_B) || '[]'),
-    notes: JSON.parse(localStorage.getItem(NOTES) || '{}')
-  };
-  function saveAll(){
-    localStorage.setItem(STORE_KEY, JSON.stringify(state.tasks));
-    localStorage.setItem(ATT_A, JSON.stringify(state.attachedA));
-    localStorage.setItem(ATT_B, JSON.stringify(state.attachedB));
-    localStorage.setItem(NOTES, JSON.stringify(state.notes));
-  }
-
-  // utils
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  // render overall list
-  function renderOverall(){
-    const root = document.getElementById('overallList');
-    root.innerHTML = '';
-    state.tasks.forEach((t,i)=>{
-      const div = document.createElement('div');
-      div.className = 'task-row';
-      div.innerHTML = `<div class="task-name">${escapeHtml(t)}</div>
-        <div class="task-actions">
-          <button data-idx="${i}" data-target="A">＋A</button>
-          <button data-idx="${i}" data-target="B">＋B</button>
-        </div>`;
-      root.appendChild(div);
-    });
-    root.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = ()=> {
-        const idx = Number(btn.dataset.idx);
-        attachToTimer(state.tasks[idx], btn.dataset.target);
-      };
-    });
-  }
-
-  function renderAttached(which){
-    const container = document.getElementById(which==='A' ? 'attachedA' : 'attachedB');
-    const list = which==='A' ? state.attachedA : state.attachedB;
-    container.innerHTML = '';
-    list.forEach((t,i)=>{
-      const row = document.createElement('div');
-      row.className = 'attached-task';
-      row.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`;
-      container.appendChild(row);
-    });
-    container.querySelectorAll('.del').forEach(b=>{
-      b.onclick = ()=> {
-        const w = b.dataset.which, i = Number(b.dataset.idx);
-        if(w==='A') state.attachedA.splice(i,1); else state.attachedB.splice(i,1);
-        saveAll(); renderAttached('A'); renderAttached('B');
-      };
-    });
-  }
-
-  // ADD / CLEAR tasks
-  document.getElementById('addTaskBtn').addEventListener('click', ()=>{
-    const v = document.getElementById('newTaskName').value.trim();
-    if(!v) return;
-    state.tasks.push(v);
-    document.getElementById('newTaskName').value = '';
-    saveAll(); renderOverall();
-  });
-  document.getElementById('clearAll').addEventListener('click', ()=>{
-    if(!confirm('Clear all saved tasks?')) return;
-    state.tasks = []; saveAll(); renderOverall(); renderAttached('A'); renderAttached('B');
-  });
-
-  function attachToTimer(name, which){
-    if(which==='A'){ state.attachedA.push(name); document.getElementById('noteA').value = name; }
-    else { state.attachedB.push(name); document.getElementById('noteB').value = name; }
-    saveAll(); renderAttached('A'); renderAttached('B');
-  }
-
-  // show/hide notes toggle
-  function setupNoteToggle(btnId, noteId){
-    const btn = document.getElementById(btnId), note = document.getElementById(noteId);
-    // restore note
-    note.value = state.notes[noteId] || '';
-    btn.addEventListener('click', ()=> {
-      const isHidden = note.classList.contains('note-collapsed');
-      if(isHidden){ note.classList.remove('note-collapsed'); btn.textContent = 'Hide Notes'; }
-      else { note.classList.add('note-collapsed'); btn.textContent = 'Show Notes'; }
-    });
-    note.addEventListener('input', ()=> { state.notes[noteId] = note.value; saveAll(); });
-  }
-  setupNoteToggle('toggleNoteA','noteA');
-  setupNoteToggle('toggleNoteB','noteB');
-
-  // timer logic (countdown by duration from inputs)
-  function TimerInstance(prefix){
-    this.prefix = prefix;
-    this.display = document.getElementById('time' + prefix);
-    this.status = document.getElementById('status' + prefix);
-    this.hIn = document.getElementById('hours' + prefix);
-    this.mIn = document.getElementById('mins' + prefix);
-    this.sIn = document.getElementById('secs' + prefix);
-    this.running = false;
-    this.startAt = 0;
-    this.acc = 0;
-    this.target = 0;
-    this.raf = null;
-  }
-  TimerInstance.prototype.durationFromInputs = function(){
-    const h = Math.max(0, Number(this.hIn.value) || 0);
-    let m = Math.max(0, Number(this.mIn.value) || 0);
-    let s = Math.max(0, Number(this.sIn.value) || 0);
-    if(m>59) m = 59; if(s>59) s = 59;
-    return ((h*3600)+(m*60)+s)*1000;
-  };
-  TimerInstance.prototype.format = function(ms){
-    const s = Math.floor(ms/1000)%60;
-    const m = Math.floor(ms/60000)%60;
-    const h = Math.floor(ms/3600000);
-    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
-  };
-  TimerInstance.prototype.updateDisplay = function(){
-    const now = Date.now();
-    const elapsed = this.acc + (this.running ? (now - this.startAt) : 0);
-    if(this.target > 0){
-      const remain = Math.max(0, this.target - elapsed);
-      this.display.textContent = this.format(remain);
-      if(remain === 0 && this.running) { this.stop(true); }
-    } else {
-      this.display.textContent = this.format(elapsed);
-    }
-  };
-  TimerInstance.prototype.tick = function(){
-    this.updateDisplay();
-    if(this.running) this.raf = requestAnimationFrame(()=>this.tick());
-  };
-  TimerInstance.prototype.start = function(){
-    const dur = this.durationFromInputs();
-    if(dur === 0 && this.acc === 0){ alert('Set a duration before starting. Use the ▲ ▼ controls to change time.'); return; }
-    this.target = dur;
-    if(this.running) return;
-    this.running = true;
-    this.startAt = Date.now();
-    this.status.textContent = 'running';
-    this.tick();
-  };
-  TimerInstance.prototype.stop = function(finished=false){
-    if(!this.running) return;
-    this.running = false;
-    const now = Date.now();
-    this.acc += (now - this.startAt);
-    this.startAt = 0;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.status.textContent = finished ? 'finished' : 'stopped';
-    this.updateDisplay();
-  };
-  TimerInstance.prototype.clear = function(){
-    if(this.running){ if(!confirm('Timer is running. Clear anyway?')) return; }
-    this.running = false;
-    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
-    this.startAt = 0; this.acc = 0; this.target = 0;
-    this.status.textContent = 'stopped';
-    this.display.textContent = '00:00:00';
-    this.hIn.value = 0; this.mIn.value = 0; this.sIn.value = 0;
-  };
-
-  const A = new TimerInstance('A');
-  const B = new TimerInstance('B');
-
-  // wire basic controls
-  document.getElementById('startA').addEventListener('click', ()=> A.start());
-  document.getElementById('stopA').addEventListener('click', ()=> A.stop());
-  document.getElementById('clearA').addEventListener('click', ()=> A.clear());
-
-  document.getElementById('startB').addEventListener('click', ()=> B.start());
-  document.getElementById('stopB').addEventListener('click', ()=> B.stop());
-  document.getElementById('clearB').addEventListener('click', ()=> B.clear());
-
-  // arrow buttons behavior: increment/decrement target inputs
-  document.querySelectorAll('.arrow-btn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const tgt = btn.dataset.target;
-      const dir = btn.dataset.dir;
-      const el = document.getElementById(tgt);
-      if(!el) return;
-      const step = 1;
-      let val = Number(el.value) || 0;
-      if(dir === 'up') val += step;
-      else val = Math.max(0, val - step);
-      // clamp mins and secs
-      if(tgt.includes('mins') || tgt.includes('secs')){
-        if(val > 59) val = 59;
-      } else {
-        if(val > 999) val = 999;
-      }
-      el.value = val;
-    });
-  });
-
-  // render UI initially
-  function renderInitial(){
-    renderOverall();
-    renderAttached('A'); renderAttached('B');
-    // restore notes
-    document.getElementById('noteA').value = state.notes['noteA'] || '';
-    document.getElementById('noteB').value = state.notes['noteB'] || '';
-  }
-  renderInitial();
-
-  // save notes on input
-  document.getElementById('noteA').addEventListener('input', ()=> { state.notes['noteA'] = document.getElementById('noteA').value; saveAll(); });
-  document.getElementById('noteB').addEventListener('input', ()=> { state.notes['noteB'] = document.getElementById('noteB').value; saveAll(); });
-
-  // mini overlay open/close and drag
-  const mini = document.getElementById('miniPopup');
-  const miniHeader = document.getElementById('miniHeader');
-  document.getElementById('openMini').addEventListener('click', ()=>{
-    // show mini and position using saved pos if exists
-    mini.style.display = 'block';
-    const pos = JSON.parse(localStorage.getItem(POS) || 'null');
-    if(pos){ mini.style.left = pos.left; mini.style.top = pos.top; mini.style.right='auto'; mini.style.bottom='auto'; }
-    updateMiniTimes();
-  });
-  document.getElementById('miniClose').addEventListener('click', ()=> mini.style.display = 'none');
-
-  // draggable mini
-  (function draggable(el, handle){
+  window.addEventListener('message', onMsg, false);
+  const watch = setInterval(()=>{ try{ if(w.closed){ try{ if(w._kpInterval) clearInterval(w._kpInterval); }catch(e){} clearInterval(watch); window.removeEventListener('message', onMsg, false); URL.revokeObjectURL(url); } }catch(e){} }, 1000);
+});
+
+  // In-page mini draggable + close
+  (function(){
+    const mini = document.getElementById('miniPopup');
+    const header = document.getElementById('miniHeader');
+    document.getElementById('miniClose').addEventListener('click', ()=> mini.style.display='none');
     let down=false, sx=0, sy=0, ox=0, oy=0;
-    handle.addEventListener('mousedown', (ev)=>{
-      down=true; sx=ev.clientX; sy=ev.clientY;
-      const rect = el.getBoundingClientRect(); ox = rect.left; oy = rect.top;
-      document.body.style.userSelect='none';
-    });
-    window.addEventListener('mousemove', (ev)=>{
-      if(!down) return;
-      const dx = ev.clientX - sx, dy = ev.clientY - sy;
-      el.style.left = Math.max(8, ox + dx) + 'px';
-      el.style.top = Math.max(8, oy + dy) + 'px';
-      el.style.right = 'auto'; el.style.bottom = 'auto';
-    });
-    window.addEventListener('mouseup', ()=>{
-      if(!down) return;
-      down=false; document.body.style.userSelect='';
-      localStorage.setItem(POS, JSON.stringify({ left: el.style.left, top: el.style.top }));
-    });
-  })(mini, miniHeader);
+    header && header.addEventListener('pointerdown', (ev)=>{ down=true; sx=ev.clientX; sy=ev.clientY; const r=mini.getBoundingClientRect(); ox=r.left; oy=r.top; ev.target.setPointerCapture && ev.target.setPointerCapture(ev.pointerId); });
+    window.addEventListener('pointermove', (ev)=>{ if(!down) return; const dx=ev.clientX-sx, dy=ev.clientY-sy; mini.style.left = Math.max(8, ox + dx) + 'px'; mini.style.top = Math.max(8, oy + dy) + 'px'; mini.style.right='auto'; mini.style.bottom='auto'; });
+    window.addEventListener('pointerup', ()=>{ if(!down) return; down=false; localStorage.setItem(MINI_POS, JSON.stringify({left:mini.style.left, top:mini.style.top})); });
+  })();
 
   function updateMiniTimes(){
-    document.getElementById('miniTimeA').textContent = document.getElementById('timeA').textContent;
-    document.getElementById('miniTimeB').textContent = document.getElementById('timeB').textContent;
+    const a = document.getElementById('timeA').textContent;
+    const b = document.getElementById('timeB').textContent;
+    const mA = document.getElementById('miniTimeA');
+    const mB = document.getElementById('miniTimeB');
+    if(mA) mA.textContent = a;
+    if(mB) mB.textContent = b;
   }
   setInterval(updateMiniTimes, 400);
 
-  // pin behavior: toggles draggable state for the whole main widget so you can move it on the page
-  const appWrap = document.getElementById('appWrap');
-  function togglePin(pinId){
-    const pin = document.getElementById(pinId);
-    pin.classList.toggle('turq');
-    const isPinned = pin.classList.contains('turq');
-    if(isPinned){
-      pin.textContent = '📍';
-      appWrap.classList.add('draggable');
-      makeDraggable(appWrap, pin); // allow dragging by pin
-    } else {
-      pin.textContent = '📌';
-      appWrap.classList.remove('draggable');
-      removeDraggable(appWrap);
-    }
+  // Pin: make each timer card draggable when its pin is active
+  function makeCardDraggable(card, handle, storageKey){
+    if(card._dragInit) return;
+    let down=false, sx=0, sy=0, ox=0, oy=0;
+    handle.addEventListener('pointerdown', (ev)=>{ if(!handle.classList.contains('active')) return; ev.preventDefault(); down=true; sx=ev.clientX; sy=ev.clientY; const r=card.getBoundingClientRect(); ox=r.left; oy=r.top; handle.setPointerCapture && handle.setPointerCapture(ev.pointerId); });
+    window.addEventListener('pointermove', (ev)=>{ if(!down) return; const dx=ev.clientX - sx, dy=ev.clientY - sy; card.style.position='relative'; card.style.left = Math.max(-1000, ox + dx) + 'px'; card.style.top = Math.max(-1000, oy + dy) + 'px'; });
+    window.addEventListener('pointerup', ()=>{ if(!down) return; down=false; localStorage.setItem(storageKey, JSON.stringify({left:card.style.left, top:card.style.top})); });
+    card._dragInit = true;
   }
-  document.getElementById('pinA').addEventListener('click', ()=> togglePin('pinA'));
-  document.getElementById('pinB').addEventListener('click', ()=> togglePin('pinB'));
-
-  // make appWrap draggable using a handle; store position
-  let dragState = null;
-  function makeDraggable(el, handle){
-    if(el._draggable) return;
-    const onDown = (e)=>{
-      dragState = { sx: e.clientX, sy: e.clientY, ox: el.offsetLeft, oy: el.offsetTop };
-      document.body.style.userSelect='none';
-    };
-    const onMove = (e)=>{
-      if(!dragState) return;
-      const dx = e.clientX - dragState.sx, dy = e.clientY - dragState.sy;
-      el.style.position = 'relative';
-      el.style.left = Math.max(-200, dragState.ox + dx) + 'px';
-      el.style.top = Math.max(-200, dragState.oy + dy) + 'px';
-    };
-    const onUp = ()=>{
-      if(!dragState) return;
-      document.body.style.userSelect='';
-      localStorage.setItem('kp_widget_pos', JSON.stringify({ left: el.style.left || '0px', top: el.style.top || '0px' }));
-      dragState = null;
-    };
-    handle.addEventListener('mousedown', onDown);
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-    el._draggable = { onDown, onMove, onUp, handle };
+  function togglePin(pinId, cardId, storageKey){
+    const pin = document.getElementById(pinId), card = document.getElementById(cardId);
+    pin.classList.toggle('active');
+    if(pin.classList.contains('active')){ pin.textContent='📍'; makeCardDraggable(card, pin, storageKey); }
+    else { pin.textContent='📌'; }
   }
-  function removeDraggable(el){
-    if(!el._draggable) return;
-    const h = el._draggable.handle;
-    h.removeEventListener('mousedown', el._draggable.onDown);
-    window.removeEventListener('mousemove', el._draggable.onMove);
-    window.removeEventListener('mouseup', el._draggable.onUp);
-    delete el._draggable;
-  }
+  document.getElementById('pinA').addEventListener('click', ()=> togglePin('pinA','timer1', POS_A));
+  document.getElementById('pinB').addEventListener('click', ()=> togglePin('pinB','timer2', POS_B));
 
-  // save state before unload
-  window.addEventListener('beforeunload', ()=> {
-    state.notes['noteA'] = document.getElementById('noteA').value;
-    state.notes['noteB'] = document.getElementById('noteB').value;
-    saveAll();
-  });
+  // restore saved positions
+  (function restore(){
+    try{
+      const pa = JSON.parse(localStorage.getItem(POS_A) || 'null');
+      const pb = JSON.parse(localStorage.getItem(POS_B) || 'null');
+      const pm = JSON.parse(localStorage.getItem(MINI_POS) || 'null');
+      if(pa){ const el = document.getElementById('timer1'); el.style.left=pa.left; el.style.top=pa.top; el.style.position='relative'; }
+      if(pb){ const el = document.getElementById('timer2'); el.style.left=pb.left; el.style.top=pb.top; el.style.position='relative'; }
+      if(pm){ const m = document.getElementById('miniPopup'); m.style.left=pm.left; m.style.top=pm.top; m.style.right='auto'; m.style.bottom='auto'; }
+    }catch(e){}
+  })();
 
-  // keyboard support for add task
-  document.getElementById('newTaskName').addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('addTaskBtn').click(); }
-  });
+  // Ensure contextmenu and pointer events are allowed
+  window.addEventListener('contextmenu', (e)=>{}, true);
 
-  // expose helper
-  window.KPTasks = {
-    addTask: (name)=> { state.tasks.push(String(name)); saveAll(); renderOverall(); },
-    attachToA: (name)=> { attachToTimer(String(name),'A'); },
-    attachToB: (name)=> { attachToTimer(String(name),'B'); },
-    getTasks: ()=> state.tasks.slice()
-  };
-
-  // initialize
-  renderInitial();
-</script>
-</body>
-</html>
-
-  // render UI initially
-  function renderInitial(){
+  // Initial render
+  (function init(){
     renderOverall();
-    renderAttached('A'); renderAttached('B');
-    // restore notes
+    renderAttached('A');
+    renderAttached('B');
     document.getElementById('noteA').value = state.notes['noteA'] || '';
     document.getElementById('noteB').value = state.notes['noteB'] || '';
-  }
-  renderInitial();
+  })();
 
-  // save notes on input
+  // Save notes on input
   document.getElementById('noteA').addEventListener('input', ()=> { state.notes['noteA'] = document.getElementById('noteA').value; saveAll(); });
   document.getElementById('noteB').addEventListener('input', ()=> { state.notes['noteB'] = document.getElementById('noteB').value; saveAll(); });
 
-  // mini overlay open/close and drag
-  const mini = document.getElementById('miniPopup');
-  const miniHeader = document.getElementById('miniHeader');
-  document.getElementById('openMini').addEventListener('click', ()=>{
-    // show mini and position using saved pos if exists
-    mini.style.display = 'block';
-    const pos = JSON.parse(local
+  // Short keyboard support for adding tasks
+  document.getElementById('newTaskName').addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('addTaskBtn').click(); } });
+
+  // Helper functions used earlier (renderOverall/renderAttached)
+  function renderOverall(){ const root = document.getElementById('overallList'); root.innerHTML=''; state.tasks.forEach((t,i)=>{ const row = document.createElement('div'); row.className='task-row'; row.innerHTML = `<div class="task-name">${escapeHtml(t)}</div><div class="task-actions"><button data-idx="${i}" data-target="A">CT</button><button data-idx="${i}" data-target="B">OS</button></div>`; root.appendChild(row); }); root.querySelectorAll('.task-actions button').forEach(btn=> btn.addEventListener('click', ()=> { const idx = Number(btn.dataset.idx); attachToTimer(state.tasks[idx], btn.dataset.target); })); }
+  function renderAttached(which){ const container = document.getElementById(which === 'A' ? 'attachedA' : 'attachedB'); const list = which === 'A' ? state.attachedA : state.attachedB; container.innerHTML=''; list.forEach((t,i)=>{ const item = document.createElement('div'); item.className='attached-task'; item.innerHTML = `<div>${escapeHtml(t)}</div><div><button class="del" data-which="${which}" data-idx="${i}">🗑</button></div>`; container.appendChild(item); }); container.querySelectorAll('.del').forEach(btn=> btn.addEventListener('click', ()=> { const which = btn.dataset.which; const idx = Number(btn.dataset.idx); if(which === 'A') state.attachedA.splice(idx,1); else state.attachedB.splice(idx,1); saveAll(); renderAttached('A'); renderAttached('B'); })); }
+
+  // Expose small API
+  window.KPTasks = { addTask: (n)=> { state.tasks.push(String(n)); saveAll(); renderOverall(); }, attachToA: (n)=> attachToTimer(String(n),'A'), attachToB: (n)=> attachToTimer(String(n),'B'), getTasks: ()=> state.tasks.slice() };
+
+  // persist before unload
+  window.addEventListener('beforeunload', ()=> { state.notes['noteA'] = document.getElementById('noteA').value; state.notes['noteB'] = document.getElementById('noteB').value; saveAll(); });
+</script>
+</body>
+</html>
